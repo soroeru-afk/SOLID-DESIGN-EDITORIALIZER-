@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Shippori+Mincho:wght@500;700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Teko:wght@500;700&family=JetBrains+Mono:wght@400;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=DotGothic16&family=Hina+Mincho&family=Kaisei+Decol:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@400;700;900&family=Noto+Serif+JP:wght@400;700;900&family=Rampart+One&family=Reggae+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Train+One&family=Zen+Dots&family=Zen+Old+Mincho:wght@400;700;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Noto Sans JP", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Shippori Mincho", ui-serif, Georgia, serif;
+}
+
+@layer base {
+  :root {
+    --bg-main: #0a0c10;
+    --bg-panel: #111418;
+    --bg-input: #080a0d;
+    --bg-btn: #1a1f26;
+    --border-base: #1e252e;
+    --text-base: #8a95a3;
+    --accent: #4a5568;
+  }
+
+  body {
+    background-color: var(--bg-main);
+    color: var(--text-base);
+    @apply font-sans antialiased overflow-hidden;
+  }
+}
+
+@layer utilities {
+  .writing-vertical-rl {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
+}
+
+.ss-label {
+  @apply flex items-center gap-2 mb-3 select-none text-[10px] font-bold tracking-widest uppercase text-[#8a95a3];
+}
+
+.ss-input {
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-base);
+  @apply w-full text-white p-3 text-xs focus:border-[#4d5e7a] focus:ring-0 outline-none transition-all placeholder:text-[#2d3a4d];
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-base);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
