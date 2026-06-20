@@ -1453,10 +1453,12 @@ export default function App() {
         <div className="w-[320px] h-full flex flex-col shrink-0 relative">
           <div className="p-6 pb-5 border-b border-[#1e252e] shrink-0 bg-[#0a0c10] flex flex-col justify-between min-h-[160px]">
             <div className="flex items-start justify-between w-full">
-              <div className="flex items-start gap-4">
-                <LayoutTemplate size={24} className="text-[#e2e8f0] mt-1 shrink-0" />
+              <div className="flex items-start gap-3">
+                <div className="border border-[#4e5d74] p-1.5 rounded-md shrink-0 mt-0.5">
+                  <LayoutTemplate size={20} className="text-[#e2e8f0]" />
+                </div>
                 <div className="flex flex-col gap-1">
-                  <h1 className="text-white font-bold tracking-[0.05em] text-[22px] leading-tight" style={{ fontFamily: '"Share Tech Mono", monospace' }}>
+                  <h1 className="text-white font-extrabold tracking-wider text-[22px] leading-tight" style={{ fontFamily: '"Inter", sans-serif' }}>
                     SOLID DESIGN<br />EDITORIALIZER
                   </h1>
                 </div>
