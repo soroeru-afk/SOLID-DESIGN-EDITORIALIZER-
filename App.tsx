@@ -56,7 +56,7 @@ const DraggableBlock = ({
   onClick
 }: any) => {
   const isEdit = isEditMode;
-  const gridColor = gridMode === 'cyan' ? '#00ffff' : (gridMode === 'dark' ? '#333333' : 'transparent');
+  const gridColor = gridMode === 'cyan' ? '#00ffff' : (gridMode === 'dark' ? '#333333' : (gridMode === 'light' ? '#e2e8f0' : 'transparent'));
 
   // Determine z-index based on state and style
   const currentZIndex = isSelected ? 9999 : style.zIndex;
@@ -266,7 +266,7 @@ interface PreviewCanvasProps {
   offsets: Record<string, {x: number, y: number}>;
   onDragEnd: (id: string, dx: number, dy: number) => void;
   showGrid?: boolean;
-  blockStyles: Record<string, { color?: string, scale?: number, fontFamily?: string, zIndex?: number }>;
+  blockStyles: Record<string, { [key: string]: any }>;
   selectedBlockId: string | null;
   onSelectBlock: (id: string) => void;
   isMonotone: boolean;
@@ -284,6 +284,26 @@ const PreviewCanvas = ({
   const body2Paragraphs = (body2 || '').split('\n\n');
 
   const spring = { type: "spring", stiffness: 70, damping: 15, mass: 1.1 };
+
+  const getShadow = (blockId: string, defaultStrokeWidth: number) => {
+    let shadows = [];
+    if (blockStyles[blockId]?.textStroke) {
+      const sw = blockStyles[blockId]?.textStrokeWidth !== undefined ? blockStyles[blockId]?.textStrokeWidth : defaultStrokeWidth;
+      // when building stroke, we use text-shadow as fallback/enhancement
+      shadows.push(`0 0 ${sw * 2}px ${blockStyles[blockId]?.textStroke}`);
+    }
+    return shadows.length > 0 ? shadows.join(', ') : undefined;
+  };
+
+  const getDropShadowFilter = (blockId: string) => {
+    if (blockStyles[blockId]?.dropShadow) {
+      const blur = blockStyles[blockId]?.dropShadowBlur !== undefined ? blockStyles[blockId]?.dropShadowBlur : 30;
+      const ox = blockStyles[blockId]?.dropShadowX || 0;
+      const oy = blockStyles[blockId]?.dropShadowY !== undefined ? blockStyles[blockId]?.dropShadowY : 10;
+      return `drop-shadow(${ox}px ${oy}px ${blur}px ${blockStyles[blockId]?.dropShadow})`;
+    }
+    return undefined;
+  };
 
   return (
     <>
@@ -453,11 +473,12 @@ const PreviewCanvas = ({
             width={blockStyles['kicker']?.width}
             height={blockStyles['kicker']?.height}
             style={{ 
-              pointerEvents: isEditMode ? 'auto' : 'none', color: blockStyles['kicker']?.color || undefined, fontFamily: blockStyles['kicker']?.fontFamily || undefined, zIndex: blockStyles['kicker']?.zIndex !== undefined ? blockStyles['kicker'].zIndex : undefined,
+              pointerEvents: isEditMode ? 'auto' : 'none', color: blockStyles['kicker']?.color || undefined, fontFamily: blockStyles['kicker']?.fontFamily || undefined, letterSpacing: blockStyles['kicker']?.letterSpacing !== undefined ? `${blockStyles['kicker']?.letterSpacing}em` : undefined, lineHeight: blockStyles['kicker']?.lineHeight !== undefined ? blockStyles['kicker']?.lineHeight : undefined, zIndex: blockStyles['kicker']?.zIndex !== undefined ? blockStyles['kicker'].zIndex : undefined,
               writingMode: (blockStyles['kicker']?.writingMode || undefined) as any,
               textAlign: (blockStyles['kicker']?.textAlign || undefined) as any,
               WebkitTextStroke: blockStyles['kicker']?.textStroke ? `${blockStyles['kicker']?.textStrokeWidth !== undefined ? blockStyles['kicker'].textStrokeWidth : 1}px ${blockStyles['kicker'].textStroke}` : undefined,
-              textShadow: blockStyles['kicker']?.textStroke ? `0 0 ${blockStyles['kicker']?.textStrokeWidth !== undefined ? blockStyles['kicker'].textStrokeWidth * 2 : 2}px ${blockStyles['kicker'].textStroke}` : undefined,
+              textShadow: getShadow('kicker', 1),
+              filter: getDropShadowFilter('kicker'),
               whiteSpace: 'pre-wrap',
               ...(blockStyles['kicker']?.bgBlur === 'dark' ? { backgroundColor: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', padding: '24px', borderRadius: '8px' } : {}),
               ...(blockStyles['kicker']?.bgBlur === 'light' ? { backgroundColor: 'rgba(255,255,255,0.5)', backdropFilter: 'blur(8px)', padding: '24px', borderRadius: '8px' } : {})
@@ -483,12 +504,13 @@ const PreviewCanvas = ({
             width={blockStyles['titleContainer']?.width}
             height={blockStyles['titleContainer']?.height}
             style={{ 
-              pointerEvents: isEditMode ? 'auto' : 'none', color: blockStyles['titleContainer']?.color || undefined, fontFamily: blockStyles['titleContainer']?.fontFamily || undefined, zIndex: blockStyles['titleContainer']?.zIndex !== undefined ? blockStyles['titleContainer'].zIndex : undefined,
+              pointerEvents: isEditMode ? 'auto' : 'none', color: blockStyles['titleContainer']?.color || undefined, fontFamily: blockStyles['titleContainer']?.fontFamily || undefined, letterSpacing: blockStyles['titleContainer']?.letterSpacing !== undefined ? `${blockStyles['titleContainer']?.letterSpacing}em` : undefined, lineHeight: blockStyles['titleContainer']?.lineHeight !== undefined ? blockStyles['titleContainer']?.lineHeight : undefined, zIndex: blockStyles['titleContainer']?.zIndex !== undefined ? blockStyles['titleContainer'].zIndex : undefined,
               writingMode: (blockStyles['titleContainer']?.writingMode || undefined) as any,
               textAlign: (blockStyles['titleContainer']?.textAlign || undefined) as any,
               alignItems: blockStyles['titleContainer']?.textAlign === 'center' ? 'center' : blockStyles['titleContainer']?.textAlign === 'right' ? 'flex-end' : blockStyles['titleContainer']?.textAlign === 'left' ? 'flex-start' : undefined,
               WebkitTextStroke: blockStyles['titleContainer']?.textStroke ? `${blockStyles['titleContainer']?.textStrokeWidth !== undefined ? blockStyles['titleContainer'].textStrokeWidth : 2}px ${blockStyles['titleContainer'].textStroke}` : undefined,
-              textShadow: blockStyles['titleContainer']?.textStroke ? `0 0 ${blockStyles['titleContainer']?.textStrokeWidth !== undefined ? blockStyles['titleContainer'].textStrokeWidth * 2 : 4}px ${blockStyles['titleContainer'].textStroke}` : undefined,
+              textShadow: getShadow('titleContainer', 2),
+              filter: getDropShadowFilter('titleContainer'),
               whiteSpace: 'pre-wrap',
               ...(blockStyles['titleContainer']?.bgBlur === 'dark' ? { backgroundColor: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', padding: '24px', borderRadius: '8px' } : {}),
               ...(blockStyles['titleContainer']?.bgBlur === 'light' ? { backgroundColor: 'rgba(255,255,255,0.5)', backdropFilter: 'blur(8px)', padding: '24px', borderRadius: '8px' } : {})
@@ -498,7 +520,7 @@ const PreviewCanvas = ({
             onClick={isEditMode ? (e: any) => { e.stopPropagation(); onSelectBlock('titleContainer'); } : undefined}
           >
             {titleLines.map((line, i) => (
-              <motion.div key={i} className={c.titleLine} transition={spring} style={{ color: blockStyles['titleContainer']?.color || undefined, whiteSpace: 'pre-wrap' }}>
+              <motion.div key={i} className={c.titleLine} transition={spring} style={{ color: blockStyles['titleContainer']?.color || undefined, whiteSpace: 'pre-wrap', letterSpacing: blockStyles['titleContainer']?.letterSpacing !== undefined ? `${blockStyles['titleContainer']?.letterSpacing}em` : undefined, lineHeight: blockStyles['titleContainer']?.lineHeight !== undefined ? blockStyles['titleContainer']?.lineHeight : undefined }}>
                 {line === '' ? '\u00A0' : line}
               </motion.div>
             ))}
@@ -518,12 +540,13 @@ const PreviewCanvas = ({
             width={blockStyles['bodyContainer']?.width}
             height={blockStyles['bodyContainer']?.height}
             style={{ 
-              pointerEvents: isEditMode ? 'auto' : 'none', color: blockStyles['bodyContainer']?.color || undefined, fontFamily: blockStyles['bodyContainer']?.fontFamily || undefined, zIndex: blockStyles['bodyContainer']?.zIndex !== undefined ? blockStyles['bodyContainer'].zIndex : undefined,
+              pointerEvents: isEditMode ? 'auto' : 'none', color: blockStyles['bodyContainer']?.color || undefined, fontFamily: blockStyles['bodyContainer']?.fontFamily || undefined, letterSpacing: blockStyles['bodyContainer']?.letterSpacing !== undefined ? `${blockStyles['bodyContainer']?.letterSpacing}em` : undefined, lineHeight: blockStyles['bodyContainer']?.lineHeight !== undefined ? blockStyles['bodyContainer']?.lineHeight : undefined, zIndex: blockStyles['bodyContainer']?.zIndex !== undefined ? blockStyles['bodyContainer'].zIndex : undefined,
               writingMode: (blockStyles['bodyContainer']?.writingMode || undefined) as any,
               textAlign: (blockStyles['bodyContainer']?.textAlign || undefined) as any,
               alignItems: blockStyles['bodyContainer']?.textAlign === 'center' ? 'center' : blockStyles['bodyContainer']?.textAlign === 'right' ? 'flex-end' : blockStyles['bodyContainer']?.textAlign === 'left' ? 'flex-start' : undefined,
               WebkitTextStroke: blockStyles['bodyContainer']?.textStroke ? `${blockStyles['bodyContainer']?.textStrokeWidth !== undefined ? blockStyles['bodyContainer'].textStrokeWidth : 0.5}px ${blockStyles['bodyContainer'].textStroke}` : undefined,
-              textShadow: blockStyles['bodyContainer']?.textStroke ? `0 0 ${blockStyles['bodyContainer']?.textStrokeWidth !== undefined ? blockStyles['bodyContainer'].textStrokeWidth * 2 : 1}px ${blockStyles['bodyContainer'].textStroke}` : undefined,
+              textShadow: getShadow('bodyContainer', 0.5),
+              filter: getDropShadowFilter('bodyContainer'),
               whiteSpace: 'pre-wrap',
               ...(blockStyles['bodyContainer']?.bgBlur === 'dark' ? { backgroundColor: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', padding: '24px', borderRadius: '8px' } : {}),
               ...(blockStyles['bodyContainer']?.bgBlur === 'light' ? { backgroundColor: 'rgba(255,255,255,0.5)', backdropFilter: 'blur(8px)', padding: '24px', borderRadius: '8px' } : {})
@@ -533,7 +556,7 @@ const PreviewCanvas = ({
             onClick={isEditMode ? (e: any) => { e.stopPropagation(); onSelectBlock('bodyContainer'); } : undefined}
           >
             {bodyParagraphs.map((p, i) => (
-              <motion.p key={i} className={c.bodyLine} transition={spring} style={{ color: blockStyles['bodyContainer']?.color || undefined, whiteSpace: 'pre-wrap' }}>
+              <motion.p key={i} className={c.bodyLine} transition={spring} style={{ color: blockStyles['bodyContainer']?.color || undefined, whiteSpace: 'pre-wrap', letterSpacing: blockStyles['bodyContainer']?.letterSpacing !== undefined ? `${blockStyles['bodyContainer']?.letterSpacing}em` : undefined, lineHeight: blockStyles['bodyContainer']?.lineHeight !== undefined ? blockStyles['bodyContainer']?.lineHeight : undefined }}>
                 {p === '' ? '\u00A0' : preserveSpaces(p)}
               </motion.p>
             ))}
@@ -554,12 +577,13 @@ const PreviewCanvas = ({
               width={blockStyles['body2Container']?.width}
               height={blockStyles['body2Container']?.height}
               style={{ 
-                pointerEvents: isEditMode ? 'auto' : 'none', color: blockStyles['body2Container']?.color || undefined, fontFamily: blockStyles['body2Container']?.fontFamily || undefined, zIndex: blockStyles['body2Container']?.zIndex !== undefined ? blockStyles['body2Container'].zIndex : undefined,
+                pointerEvents: isEditMode ? 'auto' : 'none', color: blockStyles['body2Container']?.color || undefined, fontFamily: blockStyles['body2Container']?.fontFamily || undefined, letterSpacing: blockStyles['body2Container']?.letterSpacing !== undefined ? `${blockStyles['body2Container']?.letterSpacing}em` : undefined, lineHeight: blockStyles['body2Container']?.lineHeight !== undefined ? blockStyles['body2Container']?.lineHeight : undefined, zIndex: blockStyles['body2Container']?.zIndex !== undefined ? blockStyles['body2Container'].zIndex : undefined,
                 writingMode: (blockStyles['body2Container']?.writingMode || undefined) as any,
                 textAlign: (blockStyles['body2Container']?.textAlign || undefined) as any,
                 alignItems: blockStyles['body2Container']?.textAlign === 'center' ? 'center' : blockStyles['body2Container']?.textAlign === 'right' ? 'flex-end' : blockStyles['body2Container']?.textAlign === 'left' ? 'flex-start' : undefined,
                 WebkitTextStroke: blockStyles['body2Container']?.textStroke ? `${blockStyles['body2Container']?.textStrokeWidth !== undefined ? blockStyles['body2Container'].textStrokeWidth : 0.5}px ${blockStyles['body2Container'].textStroke}` : undefined,
-                textShadow: blockStyles['body2Container']?.textStroke ? `0 0 ${blockStyles['body2Container']?.textStrokeWidth !== undefined ? blockStyles['body2Container'].textStrokeWidth * 2 : 1}px ${blockStyles['body2Container'].textStroke}` : undefined,
+                textShadow: getShadow('body2Container', 0.5),
+                filter: getDropShadowFilter('body2Container'),
                 whiteSpace: 'pre-wrap',
               ...(blockStyles['body2Container']?.bgBlur === 'dark' ? { backgroundColor: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', padding: '24px', borderRadius: '8px' } : {}),
               ...(blockStyles['body2Container']?.bgBlur === 'light' ? { backgroundColor: 'rgba(255,255,255,0.5)', backdropFilter: 'blur(8px)', padding: '24px', borderRadius: '8px' } : {})
@@ -570,7 +594,7 @@ const PreviewCanvas = ({
             >
               {body2Paragraphs.length > 0 ? (
                 body2Paragraphs.map((p, i) => (
-                  <motion.p key={i} className={c.body2Line} transition={spring} style={{ color: blockStyles['body2Container']?.color || undefined, whiteSpace: 'pre-wrap' }}>
+                  <motion.p key={i} className={c.body2Line} transition={spring} style={{ color: blockStyles['body2Container']?.color || undefined, whiteSpace: 'pre-wrap', letterSpacing: blockStyles['body2Container']?.letterSpacing !== undefined ? `${blockStyles['body2Container']?.letterSpacing}em` : undefined, lineHeight: blockStyles['body2Container']?.lineHeight !== undefined ? blockStyles['body2Container']?.lineHeight : undefined }}>
                     {p === '' ? '\u00A0' : preserveSpaces(p)}
                   </motion.p>
                 ))
@@ -596,11 +620,12 @@ const PreviewCanvas = ({
             width={blockStyles['meta1']?.width}
             height={blockStyles['meta1']?.height}
             style={{ 
-              pointerEvents: isEditMode ? 'auto' : 'none', color: blockStyles['meta1']?.color || undefined, fontFamily: blockStyles['meta1']?.fontFamily || undefined, zIndex: blockStyles['meta1']?.zIndex !== undefined ? blockStyles['meta1'].zIndex : undefined,
+              pointerEvents: isEditMode ? 'auto' : 'none', color: blockStyles['meta1']?.color || undefined, fontFamily: blockStyles['meta1']?.fontFamily || undefined, letterSpacing: blockStyles['meta1']?.letterSpacing !== undefined ? `${blockStyles['meta1']?.letterSpacing}em` : undefined, lineHeight: blockStyles['meta1']?.lineHeight !== undefined ? blockStyles['meta1']?.lineHeight : undefined, zIndex: blockStyles['meta1']?.zIndex !== undefined ? blockStyles['meta1'].zIndex : undefined,
               writingMode: (blockStyles['meta1']?.writingMode || undefined) as any,
               textAlign: (blockStyles['meta1']?.textAlign || undefined) as any,
               WebkitTextStroke: blockStyles['meta1']?.textStroke ? `${blockStyles['meta1']?.textStrokeWidth !== undefined ? blockStyles['meta1'].textStrokeWidth : 0.5}px ${blockStyles['meta1'].textStroke}` : undefined,
-              textShadow: blockStyles['meta1']?.textStroke ? `0 0 ${blockStyles['meta1']?.textStrokeWidth !== undefined ? blockStyles['meta1'].textStrokeWidth * 2 : 1}px ${blockStyles['meta1'].textStroke}` : undefined,
+              textShadow: getShadow('meta1', 0.5),
+              filter: getDropShadowFilter('meta1'),
               whiteSpace: 'pre-wrap',
               ...(blockStyles['meta1']?.bgBlur === 'dark' ? { backgroundColor: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', padding: '24px', borderRadius: '8px' } : {}),
               ...(blockStyles['meta1']?.bgBlur === 'light' ? { backgroundColor: 'rgba(255,255,255,0.5)', backdropFilter: 'blur(8px)', padding: '24px', borderRadius: '8px' } : {})
@@ -626,11 +651,12 @@ const PreviewCanvas = ({
             width={blockStyles['meta2']?.width}
             height={blockStyles['meta2']?.height}
             style={{ 
-              pointerEvents: isEditMode ? 'auto' : 'none', color: blockStyles['meta2']?.color || undefined, fontFamily: blockStyles['meta2']?.fontFamily || undefined, zIndex: blockStyles['meta2']?.zIndex !== undefined ? blockStyles['meta2'].zIndex : undefined,
+              pointerEvents: isEditMode ? 'auto' : 'none', color: blockStyles['meta2']?.color || undefined, fontFamily: blockStyles['meta2']?.fontFamily || undefined, letterSpacing: blockStyles['meta2']?.letterSpacing !== undefined ? `${blockStyles['meta2']?.letterSpacing}em` : undefined, lineHeight: blockStyles['meta2']?.lineHeight !== undefined ? blockStyles['meta2']?.lineHeight : undefined, zIndex: blockStyles['meta2']?.zIndex !== undefined ? blockStyles['meta2'].zIndex : undefined,
               writingMode: (blockStyles['meta2']?.writingMode || undefined) as any,
               textAlign: (blockStyles['meta2']?.textAlign || undefined) as any,
               WebkitTextStroke: blockStyles['meta2']?.textStroke ? `${blockStyles['meta2']?.textStrokeWidth !== undefined ? blockStyles['meta2'].textStrokeWidth : 0.5}px ${blockStyles['meta2'].textStroke}` : undefined,
-              textShadow: blockStyles['meta2']?.textStroke ? `0 0 ${blockStyles['meta2']?.textStrokeWidth !== undefined ? blockStyles['meta2'].textStrokeWidth * 2 : 1}px ${blockStyles['meta2'].textStroke}` : undefined,
+              textShadow: getShadow('meta2', 0.5),
+              filter: getDropShadowFilter('meta2'),
               whiteSpace: 'pre-wrap',
               ...(blockStyles['meta2']?.bgBlur === 'dark' ? { backgroundColor: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', padding: '24px', borderRadius: '8px' } : {}),
               ...(blockStyles['meta2']?.bgBlur === 'light' ? { backgroundColor: 'rgba(255,255,255,0.5)', backdropFilter: 'blur(8px)', padding: '24px', borderRadius: '8px' } : {})
@@ -650,22 +676,31 @@ const PreviewCanvas = ({
 };
 
 export default function App() {
-  const [imageUrl, setImageUrl] = useState<string>('');
-  const [image2Url, setImage2Url] = useState<string>('');
-  const [kicker, setKicker] = useState(DEFAULT_KICKER);
-  const [heading, setHeading] = useState(DEFAULT_HEADING);
-  const [body, setBody] = useState(DEFAULT_BODY);
-  const [body2, setBody2] = useState('');
-  const [meta1, setMeta1] = useState(DEFAULT_META1);
-  const [meta2, setMeta2] = useState(DEFAULT_META2);
+  const initialState = (() => {
+    try {
+      const saved = localStorage.getItem('solid-design-state');
+      return saved ? JSON.parse(saved) : {};
+    } catch (e) {
+      return {};
+    }
+  })();
+
+  const [imageUrl, setImageUrl] = useState<string>(initialState.imageUrl ?? '');
+  const [image2Url, setImage2Url] = useState<string>(initialState.image2Url ?? '');
+  const [kicker, setKicker] = useState(initialState.kicker ?? DEFAULT_KICKER);
+  const [heading, setHeading] = useState(initialState.heading ?? DEFAULT_HEADING);
+  const [body, setBody] = useState(initialState.body ?? DEFAULT_BODY);
+  const [body2, setBody2] = useState(initialState.body2 ?? '');
+  const [meta1, setMeta1] = useState(initialState.meta1 ?? DEFAULT_META1);
+  const [meta2, setMeta2] = useState(initialState.meta2 ?? DEFAULT_META2);
   
-  const [orientation, setOrientation] = useState<Orientation>('vertical');
-  const [stylePattern, setStylePattern] = useState<LayoutStyle>('story');
-  const [gridMode, setGridMode] = useState<'none'|'cyan'|'dark'>('none');
-  const [gridColor, setGridColor] = useState<'cyan'|'dark'>('cyan');
+  const [orientation, setOrientation] = useState<Orientation>(initialState.orientation ?? 'vertical');
+  const [stylePattern, setStylePattern] = useState<LayoutStyle>(initialState.stylePattern ?? 'story');
+  const [gridMode, setGridMode] = useState<'none'|'cyan'|'dark'|'light'>('none');
+  const [gridColor, setGridColor] = useState<'cyan'|'dark'|'light'>('light');
   const [isEditMode, setIsEditMode] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<'design'|'image'|'text'>('design');
-  const [isMonotone, setIsMonotone] = useState<boolean>(false);
+  const [isMonotone, setIsMonotone] = useState<boolean>(initialState.isMonotone ?? false);
   const [filledSlots, setFilledSlots] = useState<number[]>([]);
   const [sidebarPosition, setSidebarPosition] = useState<'left'|'right'>('left');
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
@@ -678,6 +713,7 @@ export default function App() {
   const [statusOpacity, setStatusOpacity] = useState<number>(80);
   const [statusTheme, setStatusTheme] = useState<'dark'|'light'>('dark');
   const [isPanelCollapsed, setIsPanelCollapsed] = useState<boolean>(false);
+  const [lang, setLang] = useState<'en'|'jp'>('en');
 
   useEffect(() => {
     const filled: number[] = [];
@@ -688,16 +724,17 @@ export default function App() {
   }, []);
   
   const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
-  const [blockStyles, setBlockStyles] = useState<Record<string, Record<string, { [key: string]: any }>>>({});
+  const [blockStyles, setBlockStyles] = useState<Record<string, Record<string, { [key: string]: any }>>>(initialState.blockStyles ?? {});
   
   const [presets, setPresets] = useState<any[]>(() => {
-    const saved = localStorage.getItem('solid-design-presets');
-    return saved ? JSON.parse(saved) : [];
+    try {
+      const saved = localStorage.getItem('solid-design-presets');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
   });
-  const [offsets, setOffsets] = useState<Record<string, Record<string, {x:number,y:number}>>>(() => {
-    const saved = localStorage.getItem('solid-design-state');
-    return saved ? JSON.parse(saved).offsets || {} : {};
-  });
+  const [offsets, setOffsets] = useState<Record<string, Record<string, {x:number,y:number}>>>(initialState.offsets ?? {});
   
   const canvasRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -812,28 +849,6 @@ export default function App() {
       console.error('Failed to load slot', e);
     }
   };
-
-  // Load remaining initial state on mount
-  useEffect(() => {
-    const saved = localStorage.getItem('solid-design-state');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (parsed.imageUrl !== undefined) setImageUrl(parsed.imageUrl);
-        if (parsed.image2Url !== undefined) setImage2Url(parsed.image2Url);
-        if (parsed.kicker !== undefined) setKicker(parsed.kicker);
-        if (parsed.heading !== undefined) setHeading(parsed.heading);
-        if (parsed.body !== undefined) setBody(parsed.body);
-        if (parsed.body2 !== undefined) setBody2(parsed.body2);
-        if (parsed.meta1 !== undefined) setMeta1(parsed.meta1);
-        if (parsed.meta2) setMeta2(parsed.meta2);
-        if (parsed.orientation) setOrientation(parsed.orientation);
-        if (parsed.stylePattern) setStylePattern(parsed.stylePattern);
-        if (parsed.blockStyles) setBlockStyles(parsed.blockStyles);
-        if (parsed.isMonotone !== undefined) setIsMonotone(parsed.isMonotone);
-      } catch (e) {}
-    }
-  }, []);
 
   const handleDragEnd = useCallback((elementId: string, dx: number, dy: number) => {
     const rX = Math.round(dx);
@@ -1014,6 +1029,93 @@ export default function App() {
         </summary>
         <div className="p-3 pt-0 space-y-3">
           {/* Settings panel contents will use blockId directly instead of selectedBlockId */}
+          <div className="flex flex-col gap-2 border-t border-[#1e252e] pt-3">
+            <div className="w-full">
+              <div className="text-[8px] font-bold tracking-widest opacity-60 mb-1">COLOR</div>
+              <div className="flex gap-1 overflow-x-auto" style={{ filter: themeMode === 'light' ? 'invert(1) hue-rotate(180deg)' : 'none' }}>
+                 {[
+                   { id: '', label: 'AUTO' },
+                   { id: '#ffffff', label: 'W' },
+                   { id: '#000000', label: 'B' },
+                   { id: '#d94a38', label: 'R' },
+                   { id: '#00ffff', label: 'C' }
+                 ].map(c => {
+                   const isActive = (blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.color || '') === c.id;
+                   return (
+                     <button 
+                       key={c.id}
+                       className={`flex-1 min-w-[20px] py-1 text-[9px] font-bold rounded transition-all ${isActive ? 'bg-[#2d3640] text-white shadow-sm' : 'text-[#8a95a3] hover:text-[#e2e8f0] bg-black border border-[#1e252e]'}`}
+                       onClick={(e) => { e.stopPropagation(); handleBlockStyleChange('color', c.id, blockId); }}
+                     >
+                       {c.label}
+                     </button>
+                   );
+                 })}
+                 <label className="flex-1 min-w-[20px] relative py-1 flex items-center justify-center rounded transition-all cursor-pointer border border-[#1e252e] hover:border-[#4d5e7a] bg-black">
+                   <span className="text-[9px] font-bold text-[#8a95a3]">+</span>
+                   <input 
+                     type="color" 
+                     className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                     value={blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.color || '#ffffff'}
+                     onChange={(e) => { e.stopPropagation(); handleBlockStyleChange('color', e.target.value, blockId); }}
+                   />
+                 </label>
+              </div>
+            </div>
+            <div className="w-full">
+              <div className="text-[8px] font-bold tracking-widest opacity-60 mb-1">FONT</div>
+              <div className="relative border border-[#1e252e] rounded bg-black hover:border-[#4d5e7a] transition-all">
+                <select 
+                  className="w-full bg-transparent text-white p-1 pr-6 appearance-none text-[9px] outline-none cursor-pointer"
+                  value={blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.fontFamily || ''}
+                  onChange={(e) => { e.stopPropagation(); handleBlockStyleChange('fontFamily', e.target.value, blockId); }}
+                  style={{ fontFamily: blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.fontFamily || 'inherit' }}
+                >
+                   <option value="" style={{fontFamily: 'inherit', color: 'white', backgroundColor: 'black'}}>AUTO</option>
+                   <option value='Meiryo, sans-serif' style={{fontFamily: 'Meiryo, sans-serif', color: 'white', backgroundColor: 'black'}}>MEIRYO &nbsp; (メイリオ)</option>
+                   <option value='"Yu Gothic", "YuGothic", "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif' style={{fontFamily: '"Yu Gothic", "YuGothic", "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif', color: 'white', backgroundColor: 'black'}}>STANDARD GOTHIC &nbsp; (ゴシック体)</option>
+                   <option value='"M PLUS Rounded 1c", sans-serif' style={{fontFamily: '"M PLUS Rounded 1c", sans-serif', color: 'white', backgroundColor: 'black'}}>ROUNDED GOTHIC &nbsp; (丸ゴシック)</option>
+                   <option value='"Zen Maru Gothic", sans-serif' style={{fontFamily: '"Zen Maru Gothic", sans-serif', color: 'white', backgroundColor: 'black'}}>ZEN MARU GOTHIC</option>
+                   <option value='"Dela Gothic One", sans-serif' style={{fontFamily: '"Dela Gothic One", sans-serif', color: 'white', backgroundColor: 'black'}}>DELA GOTHIC</option>
+                   <option value='"Train One", sans-serif' style={{fontFamily: '"Train One", sans-serif', color: 'white', backgroundColor: 'black'}}>TRAIN ONE</option>
+                   <option value='"Reggae One", sans-serif' style={{fontFamily: '"Reggae One", sans-serif', color: 'white', backgroundColor: 'black'}}>REGGAE ONE</option>
+                   <option value='"DotGothic16", sans-serif' style={{fontFamily: '"DotGothic16", sans-serif', color: 'white', backgroundColor: 'black'}}>DOT GOTHIC</option>
+                   <option value='"M PLUS 1p", sans-serif' style={{fontFamily: '"M PLUS 1p", sans-serif', color: 'white', backgroundColor: 'black'}}>M PLUS 1P</option>
+                   <option value='"Noto Sans JP", sans-serif' style={{fontFamily: '"Noto Sans JP", sans-serif', color: 'white', backgroundColor: 'black'}}>NOTO SANS</option>
+                   <option value='"Noto Serif JP", serif' style={{fontFamily: '"Noto Serif JP", serif', color: 'white', backgroundColor: 'black'}}>NOTO SERIF</option>
+                   <option value='"Shippori Mincho", serif' style={{fontFamily: '"Shippori Mincho", serif', color: 'white', backgroundColor: 'black'}}>SHIPPORI</option>
+                   <option value='"Zen Dots", sans-serif' style={{fontFamily: '"Zen Dots", sans-serif', color: 'white', backgroundColor: 'black'}}>ZEN DOTS</option>
+                </select>
+                <div className="absolute inset-y-0 right-1 flex items-center pointer-events-none text-[#8a95a3]">
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+              </div>
+            </div>
+            <div className="w-full">
+              <div className="text-[8px] font-bold tracking-widest opacity-60 mb-1 flex justify-between">
+                <span>LETTER SPACING</span>
+                <span className="text-[#00ffff]">{blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.letterSpacing ?? 0}em</span>
+              </div>
+              <input 
+                type="range" min="-0.2" max="1" step="0.01" 
+                className="w-full accent-[#00ffff]"
+                value={blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.letterSpacing ?? 0} 
+                onChange={(e) => handleBlockStyleChange('letterSpacing', Number(e.target.value), blockId)} 
+              />
+            </div>
+            <div className="w-full">
+              <div className="text-[8px] font-bold tracking-widest opacity-60 mb-1 flex justify-between">
+                <span>LINE HEIGHT</span>
+                <span className="text-[#00ffff]">{blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.lineHeight ?? 1.5}</span>
+              </div>
+              <input 
+                type="range" min="0.5" max="3" step="0.05" 
+                className="w-full accent-[#00ffff]"
+                value={blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.lineHeight ?? 1.5} 
+                onChange={(e) => handleBlockStyleChange('lineHeight', Number(e.target.value), blockId)} 
+              />
+            </div>
+          </div>
           <div className="flex gap-2 border-t border-[#1e252e] pt-3">
             <div className="flex-1">
               <div className="text-[8px] font-bold tracking-widest opacity-60 mb-1">Z-INDEX</div>
@@ -1054,6 +1156,33 @@ export default function App() {
 
           <div className="flex gap-2 pt-2 border-t border-[#1e252e]">
             <div className="flex-1">
+               <div className="text-[8px] font-bold tracking-widest opacity-60 mb-1 flex justify-between">
+                 <span>WIDTH / W-px</span>
+                 <span className="text-[#00ffff]">{blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.width || 'AUTO'}</span>
+               </div>
+               <input 
+                 type="range" min="0" max="2000" step="10" 
+                 className="w-full accent-[#00ffff] mt-1"
+                 value={blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.width || 0} 
+                 onChange={(e) => handleBlockStyleChange('width', Number(e.target.value) || undefined, blockId)} 
+               />
+            </div>
+            <div className="flex-1 border-l border-[#1e252e] pl-2">
+               <div className="text-[8px] font-bold tracking-widest opacity-60 mb-1 flex justify-between">
+                 <span>HEIGHT / H-px</span>
+                 <span className="text-[#00ffff]">{blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.height || 'AUTO'}</span>
+               </div>
+               <input 
+                 type="range" min="0" max="2000" step="10" 
+                 className="w-full accent-[#00ffff] mt-1"
+                 value={blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.height || 0} 
+                 onChange={(e) => handleBlockStyleChange('height', Number(e.target.value) || undefined, blockId)} 
+               />
+            </div>
+          </div>
+
+          <div className="flex gap-2 pt-2 border-t border-[#1e252e]">
+            <div className="flex-1">
               <div className="text-[8px] font-bold tracking-widest opacity-60 mb-1 flex justify-between">
                 <span>ROTATE ({blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.rotate || 0}°)</span>
                 <button 
@@ -1069,34 +1198,7 @@ export default function App() {
                 onChange={(e) => handleBlockStyleChange('rotate', Number(e.target.value), blockId)}
               />
             </div>
-            <div className="flex-1 border-l border-[#1e252e] pl-2">
-               <div className="text-[8px] font-bold tracking-widest opacity-60 mb-1 flex justify-between">
-                 <span>WIDTH / W-px</span>
-                 <span className="text-[#00ffff]">{blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.width || 'AUTO'}</span>
-               </div>
-               <input 
-                 type="range" min="0" max="2000" step="10" 
-                 className="w-full accent-[#00ffff] mt-1"
-                 value={blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.width || 0} 
-                 onChange={(e) => handleBlockStyleChange('width', Number(e.target.value) || undefined, blockId)} 
-               />
-            </div>
-          </div>
-
-          <div className="flex gap-2 pt-2 border-t border-[#1e252e]">
-             <div className="flex-1">
-               <div className="text-[8px] font-bold tracking-widest opacity-60 mb-1 flex justify-between">
-                 <span>HEIGHT / H-px</span>
-                 <span className="text-[#00ffff]">{blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.height || 'AUTO'}</span>
-               </div>
-               <input 
-                 type="range" min="0" max="2000" step="10" 
-                 className="w-full accent-[#00ffff] mt-1"
-                 value={blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.height || 0} 
-                 onChange={(e) => handleBlockStyleChange('height', Number(e.target.value) || undefined, blockId)} 
-               />
-            </div>
-            {isImageBlock && (
+            {isImageBlock ? (
               <div className="flex-1 border-l border-[#1e252e] pl-2">
                  <div className="text-[8px] font-bold tracking-widest opacity-60 mb-1 flex justify-between">
                    <span>BORDER (px)</span>
@@ -1106,10 +1208,10 @@ export default function App() {
                    type="range" min="0" max="40" step="1" 
                    className="w-full accent-[#00ffff] mt-1"
                    value={blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.borderWidth || 0} 
-                   onChange={(e) => handleBlockStyleChange('borderWidth', Number(e.target.value) || undefined, blockId)} 
+                   onChange={(e) => handleBlockStyleChange('borderWidth', Number(e.target.value), blockId)} 
                  />
               </div>
-            )}
+            ) : <div className="flex-1 border-l border-[#1e252e] pl-2"></div>}
           </div>
 
           {isImageBlock && (
@@ -1194,7 +1296,7 @@ export default function App() {
                   <div className="text-[8px] font-bold tracking-widest opacity-60 mb-1">TEXT STROKE</div>
                   <div className="flex gap-1">
                     <button 
-                       className={`flex-1 py-1 text-[9px] font-bold rounded transition-all ${(blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.textStroke || '') === '' ? 'bg-[#00ffff] text-black shadow-sm' : 'bg-black text-[#8a95a3] hover:text-[#e2e8f0] border border-[#1e252e]'}`}
+                       className={`flex-[1.5] py-1 text-[9px] font-bold rounded transition-all ${(blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.textStroke || '') === '' ? 'bg-[#00ffff] text-black shadow-sm' : 'bg-black text-[#8a95a3] hover:text-[#e2e8f0] border border-[#1e252e]'}`}
                        onClick={(e) => { e.stopPropagation(); handleBlockStyleChange('textStroke', '', blockId); }}
                     >NONE</button>
                     <button 
@@ -1205,6 +1307,13 @@ export default function App() {
                        className={`flex-1 py-1 text-[9px] font-bold rounded transition-all ${(blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.textStroke || '') === 'black' ? 'bg-[#00ffff] text-black shadow-sm' : 'bg-black text-[#8a95a3] hover:text-[#e2e8f0] border border-[#1e252e]'}`}
                        onClick={(e) => { e.stopPropagation(); handleBlockStyleChange('textStroke', 'black', blockId); }}
                     >BLK</button>
+                    <label className={`flex-1 py-1 min-w-[20px] text-[9px] font-bold rounded transition-all cursor-pointer flex items-center justify-center relative ${(blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.textStroke && blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.textStroke !== 'white' && blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.textStroke !== 'black') ? 'bg-[#00ffff] text-black shadow-sm' : 'bg-black text-[#8a95a3] hover:text-[#e2e8f0] border border-[#1e252e]'}`}>
+                      <span>+</span>
+                      <input type="color" className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                        value={(blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.textStroke !== 'white' && blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.textStroke !== 'black') ? (blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.textStroke || '#ff0000') : '#ff0000'}
+                        onChange={(e) => { e.stopPropagation(); handleBlockStyleChange('textStroke', e.target.value, blockId); }}
+                      />
+                    </label>
                   </div>
                 </div>
                 <div className="flex-1 border-l border-[#1e252e] pl-2 flex flex-col justify-center">
@@ -1225,6 +1334,82 @@ export default function App() {
                     <div className="text-[8px] font-bold tracking-widest opacity-30 text-center">STROKE DISABLED</div>
                   )}
                 </div>
+              </div>
+              
+              <div className="pt-2 border-t border-[#1e252e]">
+                <div className="flex gap-2">
+                  <div className="flex-1">
+                    <div className="text-[8px] font-bold tracking-widest opacity-60 mb-1">DROP SHADOW</div>
+                    <div className="flex gap-1 mb-2">
+                      <button 
+                         className={`flex-[1.5] py-1 text-[9px] font-bold rounded transition-all ${(blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.dropShadow || '') === '' ? 'bg-[#00ffff] text-black shadow-sm' : 'bg-black text-[#8a95a3] hover:text-[#e2e8f0] border border-[#1e252e]'}`}
+                         onClick={(e) => { e.stopPropagation(); handleBlockStyleChange('dropShadow', '', blockId); }}
+                      >NONE</button>
+                      <button 
+                         className={`flex-1 py-1 text-[9px] font-bold rounded transition-all ${(blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.dropShadow || '') === 'rgba(255,255,255,0.7)' ? 'bg-[#00ffff] text-black shadow-sm' : 'bg-black text-[#8a95a3] hover:text-[#e2e8f0] border border-[#1e252e]'}`}
+                         onClick={(e) => { e.stopPropagation(); handleBlockStyleChange('dropShadow', 'rgba(255,255,255,0.7)', blockId); }}
+                      >WHT</button>
+                      <button 
+                         className={`flex-1 py-1 text-[9px] font-bold rounded transition-all ${(blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.dropShadow || '') === 'rgba(0,0,0,0.7)' ? 'bg-[#00ffff] text-black shadow-sm' : 'bg-black text-[#8a95a3] hover:text-[#e2e8f0] border border-[#1e252e]'}`}
+                         onClick={(e) => { e.stopPropagation(); handleBlockStyleChange('dropShadow', 'rgba(0,0,0,0.7)', blockId); }}
+                      >BLK</button>
+                      <label className={`flex-1 py-1 min-w-[20px] text-[9px] font-bold rounded transition-all cursor-pointer flex items-center justify-center relative ${(blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.dropShadow && blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.dropShadow !== 'rgba(255,255,255,0.7)' && blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.dropShadow !== 'rgba(0,0,0,0.7)') ? 'bg-[#00ffff] text-black shadow-sm' : 'bg-black text-[#8a95a3] hover:text-[#e2e8f0] border border-[#1e252e]'}`}>
+                        <span>+</span>
+                        <input type="color" className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                          value={(blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.dropShadow !== 'rgba(255,255,255,0.7)' && blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.dropShadow !== 'rgba(0,0,0,0.7)') ? (String(blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.dropShadow).startsWith('#') ? blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.dropShadow : '#ff0000') : '#ff0000'}
+                          onChange={(e) => { e.stopPropagation(); handleBlockStyleChange('dropShadow', e.target.value, blockId); }}
+                        />
+                      </label>
+                    </div>
+                  </div>
+                  <div className="flex-1 border-l border-[#1e252e] pl-2 flex flex-col justify-center">
+                    {(blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.dropShadow) ? (
+                      <div>
+                        <div className="text-[8px] font-bold tracking-widest opacity-60 mb-0 flex justify-between">
+                          <span>BLUR LVL</span>
+                          <span className="text-[#00ffff]">{blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.dropShadowBlur !== undefined ? blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.dropShadowBlur : 30}px</span>
+                        </div>
+                        <input 
+                          type="range" min="0" max="40" step="1" 
+                          className="w-full accent-[#00ffff]"
+                          value={blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.dropShadowBlur !== undefined ? blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.dropShadowBlur : 30} 
+                          onChange={(e) => handleBlockStyleChange('dropShadowBlur', Number(e.target.value), blockId)} 
+                        />
+                      </div>
+                    ) : (
+                      <div className="text-[8px] font-bold tracking-widest opacity-30 text-center">SHADOW DISABLED</div>
+                    )}
+                  </div>
+                </div>
+                
+                {(blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.dropShadow) && (
+                  <div className="flex gap-2 mt-1">
+                    <div className="flex-1">
+                      <div className="text-[8px] font-bold tracking-widest opacity-60 mb-0 flex justify-between">
+                        <span>OFFSET X</span>
+                        <span className="text-[#00ffff]">{blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.dropShadowX || 0}px</span>
+                      </div>
+                      <input 
+                        type="range" min="-40" max="40" step="1" 
+                        className="w-full accent-[#00ffff]"
+                        value={blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.dropShadowX || 0} 
+                        onChange={(e) => handleBlockStyleChange('dropShadowX', Number(e.target.value), blockId)} 
+                      />
+                    </div>
+                    <div className="flex-1 border-l border-[#1e252e] pl-2">
+                      <div className="text-[8px] font-bold tracking-widest opacity-60 mb-0 flex justify-between">
+                        <span>OFFSET Y</span>
+                        <span className="text-[#00ffff]">{blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.dropShadowY !== undefined ? blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.dropShadowY : 10}px</span>
+                      </div>
+                      <input 
+                        type="range" min="-40" max="40" step="1" 
+                        className="w-full accent-[#00ffff]"
+                        value={blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.dropShadowY !== undefined ? blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.dropShadowY : 10} 
+                        onChange={(e) => handleBlockStyleChange('dropShadowY', Number(e.target.value), blockId)} 
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             </>
           )}
@@ -1247,65 +1432,6 @@ export default function App() {
                  })}
               </div>
             </div>
-            <div className="w-full pt-1">
-              <div className="text-[8px] font-bold tracking-widest opacity-60 mb-1">COLOR</div>
-              <div className="flex gap-1 overflow-x-auto" style={{ filter: themeMode === 'light' ? 'invert(1) hue-rotate(180deg)' : 'none' }}>
-                 {[
-                   { id: '', label: 'AUTO' },
-                   { id: '#ffffff', label: 'W' },
-                   { id: '#000000', label: 'B' },
-                   { id: '#d94a38', label: 'R' },
-                   { id: '#00ffff', label: 'C' }
-                 ].map(c => {
-                   const isActive = (blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.color || '') === c.id;
-                   return (
-                     <button 
-                       key={c.id}
-                       className={`flex-1 min-w-[20px] py-1 text-[9px] font-bold rounded transition-all ${isActive ? 'bg-[#2d3640] text-white shadow-sm' : 'text-[#8a95a3] hover:text-[#e2e8f0] bg-black border border-[#1e252e]'}`}
-                       onClick={(e) => { e.stopPropagation(); handleBlockStyleChange('color', c.id, blockId); }}
-                     >
-                       {c.label}
-                     </button>
-                   );
-                 })}
-                 <label className="flex-1 min-w-[20px] relative py-1 flex items-center justify-center rounded transition-all cursor-pointer border border-[#1e252e] hover:border-[#4d5e7a] bg-black">
-                   <span className="text-[9px] font-bold text-[#8a95a3]">+</span>
-                   <input 
-                     type="color" 
-                     className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
-                     value={blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.color || '#ffffff'}
-                     onChange={(e) => { e.stopPropagation(); handleBlockStyleChange('color', e.target.value, blockId); }}
-                   />
-                 </label>
-              </div>
-            </div>
-          </div>
-          <div className="flex gap-2 pt-2 border-t border-[#1e252e]">
-            <div className="flex-1">
-              <div className="text-[8px] font-bold tracking-widest opacity-60 mb-1">FONT</div>
-              <div className="relative border border-[#1e252e] rounded bg-black hover:border-[#4d5e7a] transition-all">
-                <select 
-                  className="w-full bg-transparent text-white p-1 pr-6 appearance-none text-[9px] outline-none cursor-pointer"
-                  value={blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.fontFamily || ''}
-                  onChange={(e) => { e.stopPropagation(); handleBlockStyleChange('fontFamily', e.target.value, blockId); }}
-                  style={{ fontFamily: blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.fontFamily || 'inherit' }}
-                >
-                   <option value="" style={{fontFamily: 'inherit', color: 'white', backgroundColor: 'black'}}>AUTO</option>
-                   <option value='"Dela Gothic One", sans-serif' style={{fontFamily: '"Dela Gothic One", sans-serif', color: 'white', backgroundColor: 'black'}}>DELA GOTHIC</option>
-                   <option value='"Train One", sans-serif' style={{fontFamily: '"Train One", sans-serif', color: 'white', backgroundColor: 'black'}}>TRAIN ONE</option>
-                   <option value='"Reggae One", sans-serif' style={{fontFamily: '"Reggae One", sans-serif', color: 'white', backgroundColor: 'black'}}>REGGAE ONE</option>
-                   <option value='"DotGothic16", sans-serif' style={{fontFamily: '"DotGothic16", sans-serif', color: 'white', backgroundColor: 'black'}}>DOT GOTHIC</option>
-                   <option value='"M PLUS 1p", sans-serif' style={{fontFamily: '"M PLUS 1p", sans-serif', color: 'white', backgroundColor: 'black'}}>M PLUS 1P</option>
-                   <option value='"Noto Sans JP", sans-serif' style={{fontFamily: '"Noto Sans JP", sans-serif', color: 'white', backgroundColor: 'black'}}>NOTO SANS</option>
-                   <option value='"Noto Serif JP", serif' style={{fontFamily: '"Noto Serif JP", serif', color: 'white', backgroundColor: 'black'}}>NOTO SERIF</option>
-                   <option value='"Shippori Mincho", serif' style={{fontFamily: '"Shippori Mincho", serif', color: 'white', backgroundColor: 'black'}}>SHIPPORI</option>
-                   <option value='"Zen Dots", sans-serif' style={{fontFamily: '"Zen Dots", sans-serif', color: 'white', backgroundColor: 'black'}}>ZEN DOTS</option>
-                </select>
-                <div className="absolute inset-y-0 right-1 flex items-center pointer-events-none text-[#8a95a3]">
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </details>
@@ -1325,24 +1451,63 @@ export default function App() {
         }}
       >
         <div className="w-[320px] h-full flex flex-col shrink-0 relative">
-          <div className="p-5 border-b border-[#1e252e] shrink-0 bg-[#0a0c10] flex items-start justify-between">
-            <div className="flex items-start gap-3">
-              <LayoutTemplate size={20} className="text-[#e2e8f0] mt-1 shrink-0" />
-              <div className="flex flex-col">
-                <h1 className="text-white font-bold tracking-[0.05em] text-xl leading-tight" style={{ fontFamily: '"Share Tech Mono", monospace' }}>
-                  SOLID DESIGN<br />EDITORIALIZER
-                </h1>
-                <p className="text-[9px] text-[#4e5d74] mt-2 tracking-[0.1em] font-bold" style={{ fontFamily: '"Share Tech Mono", monospace' }}>ALGORITHMIC FORMATTING STUDIO</p>
+          <div className="p-6 pb-5 border-b border-[#1e252e] shrink-0 bg-[#0a0c10] flex flex-col justify-between min-h-[160px]">
+            <div className="flex items-start justify-between w-full">
+              <div className="flex items-start gap-4">
+                <LayoutTemplate size={24} className="text-[#e2e8f0] mt-1 shrink-0" />
+                <div className="flex flex-col gap-1">
+                  <h1 className="text-white font-bold tracking-[0.05em] text-[22px] leading-tight" style={{ fontFamily: '"Share Tech Mono", monospace' }}>
+                    SOLID DESIGN<br />EDITORIALIZER
+                  </h1>
+                </div>
+              </div>
+              
+              <div className="shrink-0 mt-1 flex gap-2">
+                <button 
+                  className="p-1.5 text-[#8a95a3] hover:text-[#e2e8f0] bg-[#111418] hover:bg-[#2d3640] border border-[#2d3640] rounded-md transition-colors"
+                  onClick={() => setIsGlobalSettingsOpen(true)}
+                  title="Global Settings"
+                >
+                  <Settings size={14} />
+                </button>
               </div>
             </div>
             
-            <div className="shrink-0 mt-1">
+            <div className="flex items-end justify-between w-full mt-4">
+              <p className="text-[9px] text-[#4e5d74] tracking-[0.1em] font-bold" style={{ fontFamily: '"Share Tech Mono", monospace' }}>ALGORITHMIC FORMATTING STUDIO</p>
+              
+              <div className="flex bg-[#111418] border border-[#2d3640] rounded-md overflow-hidden text-[9px] font-bold">
+                <button 
+                  onClick={() => setLang('en')}
+                  className={`px-2 py-1 ${lang === 'en' ? 'bg-[#2d3640] text-[#00ffff]' : 'text-[#8a95a3] hover:text-[#e2e8f0]'}`}
+                >
+                  EN
+                </button>
+                <button 
+                  onClick={() => setLang('jp')}
+                  className={`px-2 py-1 ${lang === 'jp' ? 'bg-[#2d3640] text-[#00ffff]' : 'text-[#8a95a3] hover:text-[#e2e8f0]'}`}
+                >
+                  JP
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex border-b border-[#1e252e] bg-[#080a0d] px-5 py-3 shrink-0">
+            <div className="flex items-center gap-1 bg-[#111418] border border-[#1e252e] rounded p-1 w-full">
               <button 
-                className="p-1.5 text-[#8a95a3] hover:text-[#e2e8f0] bg-[#111418] hover:bg-[#2d3640] border border-[#2d3640] rounded-md transition-colors"
-                onClick={() => setIsGlobalSettingsOpen(true)}
-                title="Global Settings"
+                className={`flex-1 py-1.5 text-[10px] font-bold tracking-widest rounded transition-all ${orientation === 'horizontal' ? 'bg-[#2d3640] text-[#00ffff] shadow-sm' : 'text-[#8a95a3] hover:text-[#e2e8f0]'}`}
+                onClick={() => setOrientation('horizontal')}
+                title="横組レギュラー"
               >
-                <Settings size={14} />
+                ☰ REGULAR
+              </button>
+              <button 
+                className={`flex-1 py-1.5 text-[10px] font-bold tracking-widest rounded transition-all ${orientation === 'vertical' ? 'bg-[#2d3640] text-[#00ffff] shadow-sm' : 'text-[#8a95a3] hover:text-[#e2e8f0]'}`}
+                onClick={() => setOrientation('vertical')}
+                title="縦組エモーショナル"
+              >
+                Ⅲ EMOTIONAL
               </button>
             </div>
           </div>
@@ -1352,24 +1517,24 @@ export default function App() {
             className={`flex-1 py-3 text-[10px] font-bold tracking-widest transition-all ${activeTab === 'design' ? 'text-white border-b-2 border-[#00ffff]' : 'text-[#4e5d74] hover:text-[#8a95a3] border-b-2 border-transparent'}`}
             onClick={() => setActiveTab('design')}
           >
-            DESIGN
+            {lang === 'jp' ? 'デザイン' : 'DESIGN'}
           </button>
           <button 
             className={`flex-1 py-3 text-[10px] font-bold tracking-widest transition-all ${activeTab === 'image' ? 'text-white border-b-2 border-[#00ffff]' : 'text-[#4e5d74] hover:text-[#8a95a3] border-b-2 border-transparent'}`}
             onClick={() => setActiveTab('image')}
           >
-            IMAGE
+            {lang === 'jp' ? 'アセット' : 'IMAGE'}
           </button>
           <button 
             className={`flex-1 py-3 text-[10px] font-bold tracking-widest transition-all ${activeTab === 'text' ? 'text-white border-b-2 border-[#00ffff]' : 'text-[#4e5d74] hover:text-[#8a95a3] border-b-2 border-transparent'}`}
             onClick={() => setActiveTab('text')}
           >
-            TEXT
+            {lang === 'jp' ? 'テキスト' : 'TEXT'}
           </button>
         </div>
 
-        <div className="flex border-b border-[#1e252e] bg-[#080a0d] px-5 py-3 justify-between items-center shrink-0">
-          <div className="flex items-center gap-6">
+        <div className="flex border-b border-[#1e252e] bg-[#080a0d] px-5 py-3 shrink-0 justify-center">
+          <div className="flex items-center gap-6 justify-center">
             <div className="flex items-center gap-2 cursor-pointer group" onClick={() => {
                   setIsEditMode(!isEditMode);
                   if (isEditMode) setSelectedBlockId(null);
@@ -1377,7 +1542,7 @@ export default function App() {
                 <div className={`w-8 h-4 rounded-full flex items-center p-0.5 transition-colors ${!isEditMode ? 'bg-[#00ffff]' : 'bg-[#1e252e]'}`}>
                   <div className={`w-3 h-3 rounded-full bg-white transition-transform ${!isEditMode ? 'translate-x-4' : 'translate-x-0'}`}/>
                 </div>
-                <span className={`text-[10px] font-bold tracking-widest transition-colors ${!isEditMode ? 'text-[#00ffff]' : 'text-[#4e5d74] group-hover:text-white'}`}>PREVIEW MODE</span>
+                <span className={`text-[10px] font-bold tracking-widest transition-colors ${!isEditMode ? 'text-[#00ffff]' : 'text-[#4e5d74] group-hover:text-white'}`}>{lang === 'jp' ? 'プレビュー表示' : 'PREVIEW MODE'}</span>
             </div>
             
             <div className="flex items-center gap-2 cursor-pointer group" onClick={() => {
@@ -1386,7 +1551,7 @@ export default function App() {
                 <div className={`w-8 h-4 rounded-full flex items-center p-0.5 transition-colors ${gridMode !== 'none' ? 'bg-[#00ffff]' : 'bg-[#1e252e]'}`}>
                   <div className={`w-3 h-3 rounded-full bg-white transition-transform ${gridMode !== 'none' ? 'translate-x-4' : 'translate-x-0'}`}/>
                 </div>
-                <span className={`text-[10px] font-bold tracking-widest transition-colors ${gridMode !== 'none' ? 'text-[#00ffff]' : 'text-[#4e5d74] group-hover:text-white'}`}>GRID MODE</span>
+                <span className={`text-[10px] font-bold tracking-widest transition-colors ${gridMode !== 'none' ? 'text-[#00ffff]' : 'text-[#4e5d74] group-hover:text-white'}`}>{lang === 'jp' ? 'グリッド表示' : 'GRID MODE'}</span>
             </div>
           </div>
         </div>
@@ -1561,28 +1726,6 @@ export default function App() {
             <div className="space-y-6">
 
               <div className="space-y-3">
-                <div className="ss-label flex items-center gap-2">
-                  <LayoutTemplate size={14}/><span>ORIENTATION</span>
-                </div>
-                <div className="flex gap-2">
-                  <button 
-                    className={`flex-1 py-2.5 text-[11px] font-bold tracking-widest rounded-md transition-all ${orientation === 'horizontal' ? 'bg-[#2d3640] text-white shadow-sm' : 'text-[#8a95a3] hover:text-[#e2e8f0]'}`}
-                    onClick={() => setOrientation('horizontal')}
-                    title="横組レギュラー"
-                  >
-                    ☰ REGULAR
-                  </button>
-                  <button 
-                    className={`flex-1 py-2.5 text-[11px] font-bold tracking-widest rounded-md transition-all ${orientation === 'vertical' ? 'bg-[#2d3640] text-white shadow-sm' : 'text-[#8a95a3] hover:text-[#e2e8f0]'}`}
-                    onClick={() => setOrientation('vertical')}
-                    title="縦組エモーショナル"
-                  >
-                    Ⅲ EMOTIONAL
-                  </button>
-                </div>
-              </div>
-
-              <div className="space-y-3">
                 <div className="flex items-center justify-between mb-2">
                   <div className="ss-label mb-0"><Grid size={14}/><span>FORMATION GRID</span></div>
                   <div className="flex gap-2">
@@ -1596,26 +1739,70 @@ export default function App() {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {[
-                    { id: 'impact', label: 'IMPACT', desc: 'DYNAMIC' },
-                    { id: 'story', label: 'STORY', desc: 'EDITORIAL' },
-                    { id: 'gallery', label: 'GALLERY', desc: 'ART GALLERY' },
-                    { id: 'magazine', label: 'MAGAZINE', desc: 'MAGAZINE COVER' },
-                    { id: 'split', label: 'SPLIT', desc: 'SPLIT CONTRAST' },
-                    { id: 'blank', label: 'BLANK', desc: 'FREE LAYOUT' }
+                    { id: 'impact', label: 'IMPACT', desc: lang === 'jp' ? 'ダイナミック' : 'DYNAMIC' },
+                    { id: 'story', label: 'STORY', desc: lang === 'jp' ? 'エディトリアル' : 'EDITORIAL' },
+                    { id: 'gallery', label: 'GALLERY', desc: lang === 'jp' ? 'アートギャラリー' : 'ART GALLERY' },
+                    { id: 'magazine', label: 'MAGAZINE', desc: lang === 'jp' ? '雑誌カバー' : 'MAGAZINE COVER' },
+                    { id: 'split', label: 'SPLIT', desc: lang === 'jp' ? 'コントラスト' : 'SPLIT CONTRAST' },
+                    { id: 'blank', label: 'BLANK', desc: lang === 'jp' ? '自由配置' : 'FREE LAYOUT' }
                   ].map(f => (
-                    <button 
-                      key={f.id}
-                      onClick={() => setStylePattern(f.id)}
-                      className={`flex flex-col p-2.5 border rounded-lg transition-all text-left ${
-                        stylePattern === f.id 
-                          ? 'border-[#8a95a3] bg-[#1a1f26]' 
-                          : 'border-[#1e252e] bg-[#080a0d] hover:border-[#2d3a4d]'
-                      }`}
-                    >
-                      <span className={`text-[11px] font-black tracking-widest ${stylePattern === f.id ? 'text-white' : 'text-[#8a95a3]'}`}>{f.label}</span>
-                      <span className="text-[9px] opacity-60 mt-0.5">{f.desc}</span>
-                    </button>
+                    <div key={f.id} className="relative group">
+                      <button 
+                        onClick={() => setStylePattern(f.id)}
+                        className={`w-full flex flex-col p-2.5 border rounded-lg transition-all text-left ${
+                          stylePattern === f.id 
+                            ? 'border-[#8a95a3] bg-[#1a1f26]' 
+                            : 'border-[#1e252e] bg-[#080a0d] hover:border-[#2d3a4d]'
+                        }`}
+                      >
+                        <span className={`text-[11px] font-black tracking-widest ${stylePattern === f.id ? 'text-white' : 'text-[#8a95a3]'}`}>{f.label}</span>
+                        <span className="text-[9px] opacity-60 mt-0.5">{f.desc}</span>
+                      </button>
+                      <button
+                        className={`absolute top-1.5 right-1.5 p-1 rounded transition-all opacity-0 group-hover:opacity-100 bg-[#0a0c10] border border-[#1e252e] hover:border-[#4d5e7a] text-[#8a95a3] hover:text-[#00ffff]`}
+                        title={lang === 'jp' ? '配置とスタイルをリセット' : 'Reset Offset & Style'}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOffsets(prev => ({...prev, [`${f.id}-${orientation}`]: {}}));
+                          setBlockStyles(prev => ({...prev, [`${f.id}-${orientation}`]: {}}));
+                        }}
+                      >
+                        <RotateCcw size={10} />
+                      </button>
+                    </div>
                   ))}
+                </div>
+                <div className="flex gap-2 mt-2">
+                  <button 
+                    className={`flex-1 py-1.5 text-[10px] font-bold tracking-widest rounded-md transition-all flex items-center justify-center gap-1.5 border border-[#1e252e] bg-[#080a0d] hover:bg-[#1e252e] text-[#8a95a3]`}
+                    onClick={() => {
+                      setOffsets(prev => ({...prev, [`${stylePattern}-${orientation}`]: {}}));
+                    }}
+                  >
+                    <RotateCcw size={12}/> {lang === 'jp' ? '配置リセット' : 'UN-OFFSET'}
+                  </button>
+                  <button 
+                    className={`flex-1 py-1.5 text-[10px] font-bold tracking-widest rounded-md transition-all flex items-center justify-center gap-1.5 border border-[#1e252e] bg-[#080a0d] hover:bg-red-900/30 text-rose-800 hover:text-red-400`}
+                    onClick={() => {
+                      setOffsets({});
+                      setImageUrl('');
+                      setImage2Url('');
+                      setHeading(DEFAULT_HEADING);
+                      setBody(DEFAULT_BODY);
+                      setBody2('');
+                      setKicker(DEFAULT_KICKER);
+                      setMeta1(DEFAULT_META1);
+                      setMeta2(DEFAULT_META2);
+                      setGridMode('none');
+                      setBlockStyles({});
+                      setSelectedBlockId(null);
+                      setStylePattern('story');
+                      setOrientation('vertical');
+                      setIsMonotone(false);
+                    }}
+                  >
+                    <RotateCcw size={12}/> {lang === 'jp' ? 'すべてリセット' : 'RESET ALL'}
+                  </button>
                 </div>
               </div>
 
@@ -1626,7 +1813,7 @@ export default function App() {
 
                 <div className="flex bg-[#080a0d] p-1.5 rounded-lg border border-[#1e252e] gap-1.5 flex-wrap">
                   <button 
-                    className={`flex-1 min-w-[70px] py-1.5 text-[10px] font-bold tracking-widest rounded-md transition-all flex items-center justify-center gap-1.5 ${gridColor === 'cyan' ? 'bg-[#2d3640] text-[#00ffff] shadow-sm' : 'text-[#8a95a3] hover:text-[#e2e8f0]'}`}
+                    className={`flex-1 min-w-[50px] py-1.5 text-[10px] font-bold tracking-widest rounded-md transition-all flex items-center justify-center gap-1.5 ${gridColor === 'cyan' ? 'bg-[#2d3640] text-[#00ffff] shadow-sm' : 'text-[#8a95a3] hover:text-[#e2e8f0]'}`}
                     onClick={() => {
                       setGridColor('cyan');
                       if (gridMode !== 'none') setGridMode('cyan');
@@ -1635,13 +1822,22 @@ export default function App() {
                     CYAN
                   </button>
                   <button 
-                    className={`flex-1 min-w-[70px] py-1.5 text-[10px] font-bold tracking-widest rounded-md transition-all flex items-center justify-center gap-1.5 ${gridColor === 'dark' ? 'bg-[#2d3640] text-[#a0aec0] shadow-sm' : 'text-[#8a95a3] hover:text-[#e2e8f0]'}`}
+                    className={`flex-1 min-w-[50px] py-1.5 text-[10px] font-bold tracking-widest rounded-md transition-all flex items-center justify-center gap-1.5 ${gridColor === 'dark' ? 'bg-[#2d3640] text-[#a0aec0] shadow-sm' : 'text-[#8a95a3] hover:text-[#e2e8f0]'}`}
                     onClick={() => {
                       setGridColor('dark');
                       if (gridMode !== 'none') setGridMode('dark');
                     }}
                   >
                     DARK
+                  </button>
+                  <button 
+                    className={`flex-1 min-w-[50px] py-1.5 text-[10px] font-bold tracking-widest rounded-md transition-all flex items-center justify-center gap-1.5 ${gridColor === 'light' ? 'bg-[#2d3640] text-[#e2e8f0] shadow-sm' : 'text-[#8a95a3] hover:text-[#e2e8f0]'}`}
+                    onClick={() => {
+                      setGridColor('light');
+                      if (gridMode !== 'none') setGridMode('light');
+                    }}
+                  >
+                    LIGHT
                   </button>
                 </div>
               </div>
@@ -1781,40 +1977,13 @@ export default function App() {
               className={`col-span-1 py-1.5 text-[10px] font-bold tracking-widest rounded-md transition-all flex items-center justify-center gap-1.5 border border-[#1e252e] ${isSaving ? 'bg-blue-600 text-white' : 'bg-[#080a0d] hover:bg-[#1e252e] text-[#8a95a3]'}`}
               onClick={handleManualSave}
             >
-              <Save size={12}/> SAVE DESIGN
+              <Save size={12}/> {lang === 'jp' ? '保存' : 'SAVE DESIGN'}
             </button>
             <button 
               className="col-span-1 py-1.5 text-[10px] font-bold tracking-widest rounded-md transition-all flex items-center justify-center gap-1.5 border border-[#1e252e] bg-[#080a0d] hover:bg-[#1e252e] text-[#8a95a3]"
               onClick={handleDownload}
             >
-              <Download size={12} /> EXPORT IMAGE
-            </button>
-            <button 
-              className={`col-span-1 py-1.5 text-[10px] font-bold tracking-widest rounded-md transition-all flex items-center justify-center gap-1.5 border border-[#1e252e] bg-[#080a0d] hover:bg-[#1e252e] text-[#8a95a3]`}
-              onClick={() => {
-                setOffsets(prev => ({...prev, [`${stylePattern}-${orientation}`]: {}}));
-              }}
-            >
-              <RotateCcw size={12}/> UN-OFFSET
-            </button>
-            <button 
-              className={`col-span-1 py-1.5 text-[10px] font-bold tracking-widest rounded-md transition-all flex items-center justify-center gap-1.5 border border-[#1e252e] bg-[#080a0d] hover:bg-red-900/30 text-rose-800 hover:text-red-400`}
-              onClick={() => {
-                setOffsets({});
-                setImageUrl('');
-                setImage2Url('');
-                setHeading(DEFAULT_HEADING);
-                setBody(DEFAULT_BODY);
-                setBody2('');
-                setKicker(DEFAULT_KICKER);
-                setMeta1(DEFAULT_META1);
-                setMeta2(DEFAULT_META2);
-                setGridMode('none');
-                setBlockStyles({});
-                setSelectedBlockId(null);
-              }}
-            >
-              <RotateCcw size={12}/> RESET ALL
+              <Download size={12} /> {lang === 'jp' ? '画像出力' : 'EXPORT IMAGE'}
             </button>
           </div>
         </div>
@@ -1827,7 +1996,7 @@ export default function App() {
             <div className="flex items-center justify-between border-b border-[#1e252e] p-5 shrink-0 bg-[#0a0c10]">
               <div className="flex items-center gap-2">
                 <Settings size={16} className="text-[#00ffff]"/>
-                <span className="text-[12px] font-bold text-white tracking-widest">DISPLAY SETTINGS</span>
+                <span className="text-[12px] font-bold text-white tracking-widest">{lang === 'jp' ? '表示設定' : 'DISPLAY SETTINGS'}</span>
               </div>
               <button className="text-[#8a95a3] hover:text-white transition-colors" onClick={() => setIsGlobalSettingsOpen(false)}>
                 <X size={16} />
@@ -1836,7 +2005,7 @@ export default function App() {
 
             <div className="p-5 flex-1 overflow-y-auto space-y-6">
               <div>
-                <div className="text-[9px] font-bold tracking-widest text-[#4e5d74] mb-2 uppercase">Canvas Background</div>
+                <div className="text-[9px] font-bold tracking-widest text-[#4e5d74] mb-2 uppercase">{lang === 'jp' ? 'キャンバス背景色' : 'Canvas Background'}</div>
                 <div className="flex items-center gap-3">
                   <div className="relative w-8 h-8 rounded-full overflow-hidden border-2 border-[#1e252e] shrink-0" style={{ filter: themeMode === 'light' ? 'invert(1) hue-rotate(180deg)' : 'none' }}>
                     <input 
@@ -1864,7 +2033,7 @@ export default function App() {
 
               <div>
                 <div className="flex justify-between items-end mb-2">
-                  <div className="text-[9px] font-bold tracking-widest text-[#4e5d74] uppercase">Artboard Scale</div>
+                  <div className="text-[9px] font-bold tracking-widest text-[#4e5d74] uppercase">{lang === 'jp' ? 'アートボード倍率' : 'Artboard Scale'}</div>
                   <div className="text-[10px] font-bold text-[#00ffff]">{artboardScaleParam}%</div>
                 </div>
                 <input 
@@ -1878,21 +2047,21 @@ export default function App() {
               </div>
 
               <div>
-                <div className="text-[9px] font-bold tracking-widest text-[#4e5d74] mb-2 uppercase">Artboard Shadow</div>
+                <div className="text-[9px] font-bold tracking-widest text-[#4e5d74] mb-2 uppercase">{lang === 'jp' ? 'アートボードの影' : 'Artboard Shadow'}</div>
                 <div className="flex gap-2">
-                  <button onClick={() => setArtboardShadow(true)} className={`flex-1 py-2 text-[10px] font-bold border rounded ${artboardShadow ? 'bg-[#2d3640] text-[#00ffff] border-[#4e5d74]' : 'bg-[#0a0c10] text-[#8a95a3] border-[#1e252e] hover:text-[#e2e8f0]'}`}>ON</button>
-                  <button onClick={() => setArtboardShadow(false)} className={`flex-1 py-2 text-[10px] font-bold border rounded ${!artboardShadow ? 'bg-[#2d3640] text-[#00ffff] border-[#4e5d74]' : 'bg-[#0a0c10] text-[#8a95a3] border-[#1e252e] hover:text-[#e2e8f0]'}`}>OFF</button>
+                  <button onClick={() => setArtboardShadow(true)} className={`flex-1 py-2 text-[10px] font-bold border rounded ${artboardShadow ? 'bg-[#2d3640] text-[#00ffff] border-[#4e5d74]' : 'bg-[#0a0c10] text-[#8a95a3] border-[#1e252e] hover:text-[#e2e8f0]'}`}>{lang === 'jp' ? 'オン' : 'ON'}</button>
+                  <button onClick={() => setArtboardShadow(false)} className={`flex-1 py-2 text-[10px] font-bold border rounded ${!artboardShadow ? 'bg-[#2d3640] text-[#00ffff] border-[#4e5d74]' : 'bg-[#0a0c10] text-[#8a95a3] border-[#1e252e] hover:text-[#e2e8f0]'}`}>{lang === 'jp' ? 'オフ' : 'OFF'}</button>
                 </div>
               </div>
 
               <div>
                 <div className="flex justify-between items-end mb-2">
-                  <div className="text-[9px] font-bold tracking-widest text-[#4e5d74] uppercase">Status Panel (Bottom)</div>
-                  <div className="text-[10px] font-bold text-[#00ffff]">{showStatusText ? `${statusOpacity}%` : 'OFF'}</div>
+                  <div className="text-[9px] font-bold tracking-widest text-[#4e5d74] uppercase">{lang === 'jp' ? 'ステータスパネル' : 'Status Panel'}</div>
+                  <div className="text-[10px] font-bold text-[#00ffff]">{showStatusText ? `${statusOpacity}%` : (lang === 'jp' ? 'オフ' : 'OFF')}</div>
                 </div>
                 <div className="flex gap-2 mb-3">
-                  <button onClick={() => setShowStatusText(true)} className={`flex-1 py-2 text-[10px] font-bold border rounded ${showStatusText ? 'bg-[#2d3640] text-[#00ffff] border-[#4e5d74]' : 'bg-[#0a0c10] text-[#8a95a3] border-[#1e252e] hover:text-[#e2e8f0]'}`}>SHOW</button>
-                  <button onClick={() => setShowStatusText(false)} className={`flex-1 py-2 text-[10px] font-bold border rounded ${!showStatusText ? 'bg-[#2d3640] text-[#00ffff] border-[#4e5d74]' : 'bg-[#0a0c10] text-[#8a95a3] border-[#1e252e] hover:text-[#e2e8f0]'}`}>HIDE</button>
+                  <button onClick={() => setShowStatusText(true)} className={`flex-1 py-2 text-[10px] font-bold border rounded ${showStatusText ? 'bg-[#2d3640] text-[#00ffff] border-[#4e5d74]' : 'bg-[#0a0c10] text-[#8a95a3] border-[#1e252e] hover:text-[#e2e8f0]'}`}>{lang === 'jp' ? '表示' : 'SHOW'}</button>
+                  <button onClick={() => setShowStatusText(false)} className={`flex-1 py-2 text-[10px] font-bold border rounded ${!showStatusText ? 'bg-[#2d3640] text-[#00ffff] border-[#4e5d74]' : 'bg-[#0a0c10] text-[#8a95a3] border-[#1e252e] hover:text-[#e2e8f0]'}`}>{lang === 'jp' ? '非表示' : 'HIDE'}</button>
                 </div>
                 {showStatusText && (
                   <div className="flex flex-col gap-3">
@@ -1905,18 +2074,18 @@ export default function App() {
                       className="w-full accent-[#00ffff]"
                     />
                     <div className="flex gap-2">
-                      <button onClick={() => setStatusTheme('dark')} className={`flex-1 py-2 text-[10px] font-bold border rounded ${statusTheme === 'dark' ? 'bg-[#2d3640] text-[#00ffff] border-[#4e5d74]' : 'bg-[#0a0c10] text-[#8a95a3] border-[#1e252e] hover:text-[#e2e8f0]'}`}>DARK</button>
-                      <button onClick={() => setStatusTheme('light')} className={`flex-1 py-2 text-[10px] font-bold border rounded ${statusTheme === 'light' ? 'bg-[#2d3640] text-[#00ffff] border-[#4e5d74]' : 'bg-[#0a0c10] text-[#8a95a3] border-[#1e252e] hover:text-[#e2e8f0]'}`}>LIGHT</button>
+                      <button onClick={() => setStatusTheme('dark')} className={`flex-1 py-2 text-[10px] font-bold border rounded ${statusTheme === 'dark' ? 'bg-[#2d3640] text-[#00ffff] border-[#4e5d74]' : 'bg-[#0a0c10] text-[#8a95a3] border-[#1e252e] hover:text-[#e2e8f0]'}`}>{lang === 'jp' ? 'ダーク' : 'DARK'}</button>
+                      <button onClick={() => setStatusTheme('light')} className={`flex-1 py-2 text-[10px] font-bold border rounded ${statusTheme === 'light' ? 'bg-[#2d3640] text-[#00ffff] border-[#4e5d74]' : 'bg-[#0a0c10] text-[#8a95a3] border-[#1e252e] hover:text-[#e2e8f0]'}`}>{lang === 'jp' ? 'ライト' : 'LIGHT'}</button>
                     </div>
                   </div>
                 )}
               </div>
 
               <div>
-                <div className="text-[9px] font-bold tracking-widest text-[#4e5d74] mb-2 uppercase">Sidebar Position</div>
+                <div className="text-[9px] font-bold tracking-widest text-[#4e5d74] mb-2 uppercase">{lang === 'jp' ? 'サイドバー位置' : 'Sidebar Position'}</div>
                 <div className="flex gap-2">
-                  <button onClick={() => setSidebarPosition('left')} className={`flex-1 py-2 text-[10px] font-bold border rounded ${sidebarPosition === 'left' ? 'bg-[#2d3640] text-[#00ffff] border-[#4e5d74]' : 'bg-[#0a0c10] text-[#8a95a3] border-[#1e252e] hover:text-[#e2e8f0]'}`}>LEFT</button>
-                  <button onClick={() => setSidebarPosition('right')} className={`flex-1 py-2 text-[10px] font-bold border rounded ${sidebarPosition === 'right' ? 'bg-[#2d3640] text-[#00ffff] border-[#4e5d74]' : 'bg-[#0a0c10] text-[#8a95a3] border-[#1e252e] hover:text-[#e2e8f0]'}`}>RIGHT</button>
+                  <button onClick={() => setSidebarPosition('left')} className={`flex-1 py-2 text-[10px] font-bold border rounded ${sidebarPosition === 'left' ? 'bg-[#2d3640] text-[#00ffff] border-[#4e5d74]' : 'bg-[#0a0c10] text-[#8a95a3] border-[#1e252e] hover:text-[#e2e8f0]'}`}>{lang === 'jp' ? '左' : 'LEFT'}</button>
+                  <button onClick={() => setSidebarPosition('right')} className={`flex-1 py-2 text-[10px] font-bold border rounded ${sidebarPosition === 'right' ? 'bg-[#2d3640] text-[#00ffff] border-[#4e5d74]' : 'bg-[#0a0c10] text-[#8a95a3] border-[#1e252e] hover:text-[#e2e8f0]'}`}>{lang === 'jp' ? '右' : 'RIGHT'}</button>
                 </div>
               </div>
 
