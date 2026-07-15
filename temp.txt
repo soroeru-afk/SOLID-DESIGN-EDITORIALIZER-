@@ -1,0 +1,126 @@
+                 })}
+              </div>
+            </div>
+          </div>
+        </div>
+      </details>
+    );
+  };
+
+  return (
+    <div className={`w-full h-screen flex flex-col theme-${themeMode} bg-[#080a0d] text-[#8a95a3] font-sans overflow-hidden`}>
+      {/* Header Container */}
+      <AnimatePresence>
+        {isHeaderOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="w-full bg-[#0a0c10] border-b border-[#1e252e] shrink-0 overflow-hidden relative z-[60] flex flex-col justify-center"
+          >
+            <div className="flex items-center justify-between px-6 py-4">
+              {/* Left Side: Logo */}
+              <div className="flex items-center gap-2">
+                <LayoutTemplate size={16} className="text-[#00ffff]" />
+                <span className="text-white font-extrabold tracking-wider text-[12px] leading-none">SOLID DESIGN<br/>EDITORIALIZER</span>
+              </div>
+                 
+              {/* Right Side: Controls */}
+              <div className="flex items-center gap-6">
+                 {/* Theme Toggles */}
+                 <div className="flex items-center gap-2">
+                    <span className="text-[9px] font-bold tracking-widest text-[#4e5d74] mr-2">THEME</span>
+                    <div className="flex bg-[#111418] border border-[#1e252e] rounded text-[9px] font-bold p-0.5">
+                      <button onClick={() => setThemeMode('dark')} className={`px-4 py-1.5 rounded-sm transition-colors ${themeMode === 'dark' ? 'bg-[#2d3640] text-[#00ffff]' : 'text-[#8a95a3] hover:text-[#e2e8f0]'}`}>DARK</button>
+                      <button onClick={() => setThemeMode('mono')} className={`px-4 py-1.5 rounded-sm transition-colors ${themeMode === 'mono' ? 'bg-[#2d3640] text-[#00ffff]' : 'text-[#8a95a3] hover:text-[#e2e8f0]'}`}>MONO</button>
+                      <button onClick={() => setThemeMode('red')} className={`px-4 py-1.5 rounded-sm transition-colors ${themeMode === 'red' ? 'bg-[#2d3640] text-[#00ffff]' : 'text-[#8a95a3] hover:text-[#e2e8f0]'}`}>RED</button>
+                    </div>
+                 </div>
+
+                 {/* Sidebar Position */}
+                 <div className="flex items-center gap-2 border-l border-[#1e252e] pl-6">
+                    <span className="text-[9px] font-bold tracking-widest text-[#4e5d74] mr-2">SIDEBAR</span>
+                    <div className="flex bg-[#111418] border border-[#1e252e] rounded text-[9px] font-bold p-0.5">
+                      <button onClick={() => setSidebarPosition('left')} className={`px-4 py-1.5 rounded-sm transition-colors ${sidebarPosition === 'left' ? 'bg-[#2d3640] text-[#00ffff]' : 'text-[#8a95a3] hover:text-[#e2e8f0]'}`}>LEFT</button>
+                      <button onClick={() => setSidebarPosition('right')} className={`px-4 py-1.5 rounded-sm transition-colors ${sidebarPosition === 'right' ? 'bg-[#2d3640] text-[#00ffff]' : 'text-[#8a95a3] hover:text-[#e2e8f0]'}`}>RIGHT</button>
+                    </div>
+                 </div>
+
+                 {/* Language */}
+                 <div className="flex items-center gap-2 border-l border-[#1e252e] pl-6">
+                    <span className="text-[9px] font-bold tracking-widest text-[#4e5d74] mr-2">LANG</span>
+                    <div className="flex bg-[#111418] border border-[#1e252e] rounded text-[9px] font-bold p-0.5">
+                      <button onClick={() => setLang('en')} className={`px-3 py-1.5 rounded-sm transition-colors ${lang === 'en' ? 'bg-[#2d3640] text-[#00ffff]' : 'text-[#8a95a3] hover:text-[#e2e8f0]'}`}>EN</button>
+                      <button onClick={() => setLang('jp')} className={`px-3 py-1.5 rounded-sm transition-colors ${lang === 'jp' ? 'bg-[#2d3640] text-[#00ffff]' : 'text-[#8a95a3] hover:text-[#e2e8f0]'}`}>JP</button>
+                    </div>
+                 </div>
+
+                 <div className="flex items-center gap-3 border-l border-[#1e252e] pl-6">
+                    {/* Settings Button */}
+                    <button 
+                      className="p-1.5 text-[#8a95a3] hover:text-[#e2e8f0] bg-[#111418] hover:bg-[#2d3640] border border-[#1e252e] rounded-md transition-colors"
+                      onClick={() => setIsGlobalSettingsOpen(true)}
+                      title="Global Settings"
+                    >
+                      <Settings size={16} />
+                    </button>
+                    
+                    {/* Fullscreen Button */}
+                    <button 
+                      className="p-1.5 text-[#8a95a3] hover:text-[#e2e8f0] bg-[#111418] hover:bg-[#2d3640] border border-[#1e252e] rounded-md transition-colors"
+                      onClick={() => {
+                        if (!document.fullscreenElement) {
+                          document.documentElement.requestFullscreen().catch(err => console.error(err));
+                        } else {
+                          document.exitFullscreen().catch(err => console.error(err));
+                        }
+                      }}
+                      title="Toggle Fullscreen"
+                    >
+                      <Maximize size={16} />
+                    </button>
+                    
+                    {/* Close Header Button */}
+                    <button 
+                      onClick={() => setIsHeaderOpen(false)}
+                      className="p-1.5 text-[#8a95a3] hover:text-[#e2e8f0] bg-[#111418] hover:bg-[#2d3640] border border-[#1e252e] rounded-md transition-colors"
+                      title="Close Header"
+                    >
+                      <ChevronUp size={16} />
+                    </button>
+                 </div>
+              </div>
+            </div>
+            
+            {/* Subtle bottom line indicator */}
+            <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-[#00ffff]/20 to-transparent absolute bottom-0 left-0" />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {!isHeaderOpen && (
+        <div className="absolute top-4 right-6 z-[60]">
+          <button 
+            onClick={() => setIsHeaderOpen(true)}
+            className="p-1.5 text-[#8a95a3] hover:text-[#e2e8f0] bg-[#111418] hover:bg-[#2d3640] border border-[#1e252e] rounded-md transition-colors shadow-lg"
+            title="Open Header"
+          >
+            <ChevronDown size={16} />
+          </button>
+        </div>
+      )}
+
+      <div className={`flex-1 flex flex-col ${sidebarPosition === 'right' ? 'md:flex-row-reverse' : 'md:flex-row'} overflow-hidden relative`}>
+      {/* Editor Sidebar */}
+      <div 
+        className={`h-full flex flex-col bg-[#111418] z-20 shrink-0 transition-all duration-300 ease-in-out relative ${sidebarPosition === 'right' ? 'border-l border-[#1e252e]' : 'border-r border-[#1e252e]'}`}
+        style={{ 
+          width: isSidebarOpen ? '320px' : '0px', 
+          overflow: 'hidden',
+        }}
+      >
+        <div className="w-[320px] h-full flex flex-col shrink-0 relative">
+          <div className="flex border-b border-[#1e252e] bg-[#080a0d] px-5 py-3 shrink-0">
+            <div className="flex items-center gap-1 bg-[#111418] border border-[#1e252e] rounded p-1 w-full">
+              <button 
+                className={`flex-1 py-1.5 text-[10px] font-bold tracking-widest rounded transition-all ${orientation === 'horizontal' ? 'bg-[#2d3640] text-[#00ffff] shadow-sm' : 'text-[#8a95a3] hover:text-[#e2e8f0]'}`}

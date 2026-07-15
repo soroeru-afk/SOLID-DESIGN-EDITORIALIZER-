@@ -1,0 +1,29 @@
+      {showResetConfirm && (
+        <div className="absolute inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="bg-[#0a0c10] border border-[#1e252e] p-6 rounded-lg w-[320px] shadow-2xl">
+            <h3 className="text-white text-sm font-bold tracking-widest mb-4">{lang === 'jp' ? '確認' : 'CONFIRM'}</h3>
+            <p className="text-[#8a95a3] text-xs mb-6">{lang === 'jp' ? '本当にリセットしますか？この操作は取り消せません。' : 'Are you sure you want to reset all? This action cannot be undone.'}</p>
+            <div className="flex gap-3">
+              <button onClick={() => setShowResetConfirm(false)} className="flex-1 py-2 text-[10px] font-bold border border-[#1e252e] text-[#8a95a3] hover:text-white hover:border-[#4e5d74] rounded transition-colors">{lang === 'jp' ? 'キャンセル' : 'CANCEL'}</button>
+              <button onClick={() => {
+                setOffsets({});
+                setImageUrl('');
+                setImage2Url('');
+                setHeading(DEFAULT_HEADING);
+                setBody(DEFAULT_BODY);
+                setBody2('');
+                setKicker(DEFAULT_KICKER);
+                setMeta1(DEFAULT_META1);
+                setMeta2(DEFAULT_META2);
+                setGridMode('none');
+                setBlockStyles({});
+                setSelectedBlockId(null);
+                setStylePattern('story');
+                setOrientation('vertical');
+                setIsMonotone(false);
+                setShowResetConfirm(false);
+              }} className="flex-1 py-2 text-[10px] font-bold bg-[#d94a38] hover:bg-[#ff5544] text-white rounded transition-colors">{lang === 'jp' ? 'リセット' : 'RESET'}</button>
+            </div>
+          </div>
+        </div>
+      )}
