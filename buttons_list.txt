@@ -1,0 +1,361 @@
+929-    return (
+930-      <div className="flex items-center gap-1">
+931: <button 
+932-          onClick={(e) => {
+933-            e.preventDefault();
+--
+944-          )}
+945- </button>
+946: <button 
+947-          onClick={(e) => {
+948-            e.stopPropagation();
+--
+1207-          <div className="flex items-center gap-2">
+1208-            <svg className="w-3 h-3 transition-transform group-open:rotate-90 text-[#8a95a3]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+1209: <button 
+1210-              onClick={(e) => {
+1211-                e.preventDefault();
+--
+1224-            <span>STYLES: {getFriendlyName(blockId)}</span>
+1225-          </div>
+1226: <button 
+1227-            onClick={(e) => { e.preventDefault(); e.stopPropagation(); setSelectedBlockId(null); }} 
+1228-            className="text-[#8a95a3] hover:text-white flex items-center justify-center w-6 h-6 rounded hover:bg-[#1e252e]"
+--
+1239-                <div className="text-[8px] font-bold tracking-widest opacity-60 mb-1">TEXT COLOR</div>
+1240-              <div className="flex gap-1 overflow-x-auto h-[21px]">
+1241: <button 
+1242-                   className={`px-3 text-[9px] font-bold rounded transition-all ${(blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.color || '') === '' ? 'bg-[#00ffff] text-black shadow-sm' : 'text-[#8a95a3] hover:text-[#e2e8f0] bg-[#080a0d] border border-[#1e252e]'}`}
+1243-                   onClick={(e) => { e.stopPropagation(); handleBlockStyleChange('color', '', blockId); }}
+--
+1331-                   const isActive = currentZ !== undefined ? currentZ === z.id : (blockId === 'bgWrapper' ? z.id === 0 : false);
+1332-                   return (
+1333: <button 
+1334-                       key={z.id}
+1335-                       className={`flex-1 py-1 text-[9px] font-bold rounded transition-all ${isActive ? 'bg-[#00ffff] text-black shadow-sm' : 'bg-[#080a0d] text-[#8a95a3] hover:text-[#e2e8f0] border border-[#1e252e]'}`}
+--
+1385-              <div className="text-[8px] font-bold tracking-widest opacity-60 mb-1 flex justify-between">
+1386-                <span>ROTATE ({blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.rotate || 0}°)</span>
+1387: <button 
+1388-                  className="text-[7px] text-[#00ffff] hover:text-white"
+1389-                  onClick={(e) => { e.stopPropagation(); handleBlockStyleChange('rotate', 0, blockId); }}
+--
+1445-                 <div className="text-[8px] font-bold tracking-widest opacity-60 mb-1">BG COLOR</div>
+1446-                 <div className="flex gap-1 h-[21px]">
+1447: <button
+1448-                     className={`px-2 text-[9px] font-bold rounded transition-all bg-[#080a0d] hover:text-[#e2e8f0] border border-[#1e252e] w-[36px] flex items-center justify-center ${blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.isBgColorOff ? 'text-[#8a95a3]' : 'text-white'}`}
+1449-                     onClick={(e) => { e.stopPropagation(); handleBlockStyleChange('isBgColorOff', !blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.isBgColorOff, blockId); }}
+--
+1467-                 <div className="text-[8px] font-bold tracking-widest opacity-60 mb-1">BORDER COLOR</div>
+1468-                 <div className="flex gap-1 h-[21px]">
+1469: <button
+1470-                     className={`px-2 text-[9px] font-bold rounded transition-all bg-[#080a0d] hover:text-[#e2e8f0] border border-[#1e252e] w-[36px] flex items-center justify-center ${blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.isBorderColorOff ? 'text-[#8a95a3]' : 'text-white'}`}
+1471-                     onClick={(e) => { e.stopPropagation(); handleBlockStyleChange('isBorderColorOff', !blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.isBorderColorOff, blockId); }}
+--
+1495-                  <div className="text-[8px] font-bold tracking-widest opacity-60 mb-1">{lang === 'jp' ? '文字の向き' : 'TEXT DIRECTION'}</div>
+1496-                  <div className="flex gap-1">
+1497: <button 
+1498-                       className={`flex-1 py-1 text-[9px] font-bold rounded transition-all ${(blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.writingMode || '') === '' ? 'bg-[#00ffff] text-black shadow-sm' : 'bg-[#080a0d] text-[#8a95a3] hover:text-[#e2e8f0] border border-[#1e252e]'}`}
+1499-                       onClick={(e) => { e.stopPropagation(); handleBlockStyleChange('writingMode', '', blockId); }}
+1500- >{lang === 'jp' ? '自動' : 'AUTO'}</button>
+1501: <button 
+1502-                       className={`flex-1 py-1 text-[9px] font-bold rounded transition-all ${(blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.writingMode || '') === 'horizontal-tb' ? 'bg-[#00ffff] text-black shadow-sm' : 'bg-[#080a0d] text-[#8a95a3] hover:text-[#e2e8f0] border border-[#1e252e]'}`}
+1503-                       onClick={(e) => { e.stopPropagation(); handleBlockStyleChange('writingMode', 'horizontal-tb', blockId); }}
+1504- >{lang === 'jp' ? '横' : 'HORZ'}</button>
+1505: <button 
+1506-                       className={`flex-1 py-1 text-[9px] font-bold rounded transition-all ${(blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.writingMode || '') === 'vertical-rl' ? 'bg-[#00ffff] text-black shadow-sm' : 'bg-[#080a0d] text-[#8a95a3] hover:text-[#e2e8f0] border border-[#1e252e]'}`}
+1507-                       onClick={(e) => { e.stopPropagation(); handleBlockStyleChange('writingMode', 'vertical-rl', blockId); }}
+--
+1512-                  <div className="text-[8px] font-bold tracking-widest opacity-60 mb-1">ALIGNMENT</div>
+1513-                  <div className="flex gap-1">
+1514: <button 
+1515-                      className={`flex-1 py-1 text-[9px] font-bold rounded transition-all ${(blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.textAlign || '') === '' ? 'bg-[#00ffff] text-black shadow-sm' : 'bg-[#080a0d] text-[#8a95a3] hover:text-[#e2e8f0] border border-[#1e252e]'}`}
+1516-                      onClick={(e) => { e.stopPropagation(); handleBlockStyleChange('textAlign', '', blockId); }}
+1517- >{lang === 'jp' ? '自動' : 'AUTO'}</button>
+1518: <button 
+1519-                      className={`flex-1 py-1 text-[9px] font-bold rounded transition-all ${(blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.textAlign || '') === 'left' ? 'bg-[#00ffff] text-black shadow-sm' : 'bg-[#080a0d] text-[#8a95a3] hover:text-[#e2e8f0] border border-[#1e252e]'}`}
+1520-                      onClick={(e) => { e.stopPropagation(); handleBlockStyleChange('textAlign', 'left', blockId); }}
+1521- >L</button>
+1522: <button 
+1523-                      className={`flex-1 py-1 text-[9px] font-bold rounded transition-all ${(blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.textAlign || '') === 'center' ? 'bg-[#00ffff] text-black shadow-sm' : 'bg-[#080a0d] text-[#8a95a3] hover:text-[#e2e8f0] border border-[#1e252e]'}`}
+1524-                      onClick={(e) => { e.stopPropagation(); handleBlockStyleChange('textAlign', 'center', blockId); }}
+1525- >C</button>
+1526: <button 
+1527-                      className={`flex-1 py-1 text-[9px] font-bold rounded transition-all ${(blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.textAlign || '') === 'right' ? 'bg-[#00ffff] text-black shadow-sm' : 'bg-[#080a0d] text-[#8a95a3] hover:text-[#e2e8f0] border border-[#1e252e]'}`}
+1528-                      onClick={(e) => { e.stopPropagation(); handleBlockStyleChange('textAlign', 'right', blockId); }}
+1529- >R</button>
+1530: <button 
+1531-                      className={`flex-1 py-1 text-[9px] font-bold rounded transition-all ${(blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.textAlign || '') === 'justify' ? 'bg-[#00ffff] text-black shadow-sm' : 'bg-[#080a0d] text-[#8a95a3] hover:text-[#e2e8f0] border border-[#1e252e]'}`}
+1532-                      onClick={(e) => { e.stopPropagation(); handleBlockStyleChange('textAlign', 'justify', blockId); }}
+--
+1539-                  <div className="text-[8px] font-bold tracking-widest opacity-60 mb-1">TEXT STROKE</div>
+1540-                  <div className="flex gap-1">
+1541: <button 
+1542-                       className={`flex-[1.5] py-1 text-[9px] font-bold rounded transition-all ${(blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.textStroke || '') === '' ? 'bg-[#00ffff] text-black shadow-sm' : 'bg-[#080a0d] text-[#8a95a3] hover:text-[#e2e8f0] border border-[#1e252e]'}`}
+1543-                       onClick={(e) => { e.stopPropagation(); handleBlockStyleChange('textStroke', '', blockId); }}
+1544- >NONE</button>
+1545: <button 
+1546-                       className={`flex-1 py-1 text-[9px] font-bold rounded transition-all ${(blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.textStroke || '') === 'white' ? 'bg-[#00ffff] text-black shadow-sm' : 'bg-[#080a0d] text-[#8a95a3] hover:text-[#e2e8f0] border border-[#1e252e]'}`}
+1547-                       onClick={(e) => { e.stopPropagation(); handleBlockStyleChange('textStroke', 'white', blockId); }}
+1548- >WHT</button>
+1549: <button 
+1550-                       className={`flex-1 py-1 text-[9px] font-bold rounded transition-all ${(blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.textStroke || '') === 'black' ? 'bg-[#00ffff] text-black shadow-sm' : 'bg-[#080a0d] text-[#8a95a3] hover:text-[#e2e8f0] border border-[#1e252e]'}`}
+1551-                       onClick={(e) => { e.stopPropagation(); handleBlockStyleChange('textStroke', 'black', blockId); }}
+--
+1585-                    <div className="text-[8px] font-bold tracking-widest opacity-60 mb-1">DROP SHADOW</div>
+1586-                    <div className="flex gap-1 mb-2">
+1587: <button 
+1588-                         className={`flex-[1.5] py-1 text-[9px] font-bold rounded transition-all ${(blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.dropShadow || '') === '' ? 'bg-[#00ffff] text-black shadow-sm' : 'bg-[#080a0d] text-[#8a95a3] hover:text-[#e2e8f0] border border-[#1e252e]'}`}
+1589-                         onClick={(e) => { e.stopPropagation(); handleBlockStyleChange('dropShadow', '', blockId); }}
+1590- >NONE</button>
+1591: <button 
+1592-                         className={`flex-1 py-1 text-[9px] font-bold rounded transition-all ${(blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.dropShadow || '') === 'rgba(255,255,255,0.7)' ? 'bg-[#00ffff] text-black shadow-sm' : 'bg-[#080a0d] text-[#8a95a3] hover:text-[#e2e8f0] border border-[#1e252e]'}`}
+1593-                         onClick={(e) => { e.stopPropagation(); handleBlockStyleChange('dropShadow', 'rgba(255,255,255,0.7)', blockId); }}
+1594- >WHT</button>
+1595: <button 
+1596-                         className={`flex-1 py-1 text-[9px] font-bold rounded transition-all ${(blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.dropShadow || '') === 'rgba(0,0,0,0.7)' ? 'bg-[#00ffff] text-black shadow-sm' : 'bg-[#080a0d] text-[#8a95a3] hover:text-[#e2e8f0] border border-[#1e252e]'}`}
+1597-                         onClick={(e) => { e.stopPropagation(); handleBlockStyleChange('dropShadow', 'rgba(0,0,0,0.7)', blockId); }}
+--
+1665-                    const isActive = (blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.bgBlur || '') === blur;
+1666-                    return (
+1667: <button 
+1668-                         key={blur}
+1669-                         className={`flex-1 py-1 text-[9px] font-bold rounded transition-all flex items-center justify-center min-w-[32px] ${isActive ? 'bg-[#00ffff] text-black shadow-sm' : 'bg-[#080a0d] text-[#8a95a3] hover:text-[#e2e8f0] border border-[#1e252e]'}`}
+--
+1715-          <div className="flex border-b border-[#1e252e] bg-[#080a0d] px-5 py-3 shrink-0">
+1716-            <div className="flex items-center gap-1 bg-[#111418] border border-[#1e252e] rounded p-1 w-full">
+1717: <button 
+1718-                className={`flex-1 py-1.5 text-[10px] font-bold tracking-widest rounded transition-all ${orientation === 'horizontal' ? 'bg-[#2d3640] text-[#00ffff] shadow-sm' : 'text-[#8a95a3] hover:text-[#e2e8f0]'}`}
+1719-                onClick={() => setOrientation('horizontal')}
+1720-                title="横組レギュラー"
+1721- >{lang === 'jp' ? '☰ 横組' : '☰ REGULAR'}</button>
+1722: <button 
+1723-                className={`flex-1 py-1.5 text-[10px] font-bold tracking-widest rounded transition-all ${orientation === 'vertical' ? 'bg-[#2d3640] text-[#00ffff] shadow-sm' : 'text-[#8a95a3] hover:text-[#e2e8f0]'}`}
+1724-                onClick={() => setOrientation('vertical')}
+--
+1730-          <div className="flex border-b border-[#1e252e] bg-[#080a0d] px-5 py-2 shrink-0">
+1731-            <div className="flex gap-4 w-full">
+1732: <button 
+1733-                className={`flex-1 py-2 text-[10px] font-bold tracking-widest rounded-md transition-all ${activeTab === 'design' ? 'bg-[#1a1f26] text-white shadow-sm border border-[#2d3640]' : 'text-[#8a95a3] hover:text-[#e2e8f0] border border-transparent'}`}
+1734-                onClick={() => setActiveTab('design')}
+1735- >{lang === 'jp' ? 'デザイン' : 'DESIGN'}</button>
+1736: <button 
+1737-                className={`flex-1 py-2 text-[10px] font-bold tracking-widest rounded-md transition-all ${activeTab === 'image' ? 'bg-[#1a1f26] text-white shadow-sm border border-[#2d3640]' : 'text-[#8a95a3] hover:text-[#e2e8f0] border border-transparent'}`}
+1738-                onClick={() => setActiveTab('image')}
+1739- >{lang === 'jp' ? '画像' : 'IMAGE'}</button>
+1740: <button 
+1741-                className={`flex-1 py-2 text-[10px] font-bold tracking-widest rounded-md transition-all ${activeTab === 'text' ? 'bg-[#1a1f26] text-white shadow-sm border border-[#2d3640]' : 'text-[#8a95a3] hover:text-[#e2e8f0] border border-transparent'}`}
+1742-                onClick={() => setActiveTab('text')}
+--
+1766-                         <TargetButton blockId="bgWrapper" />
+1767-                       </div>
+1768: {imageUrl && <button onClick={() => setImageUrl('')} className="hover:text-red-400"><Trash2 size={10}/></button>}
+1769-                    </div>
+1770-                    <label 
+--
+1800-                         <TargetButton blockId="bgWrapper2" />
+1801-                       </div>
+1802: {image2Url && <button onClick={() => setImage2Url('')} className="hover:text-red-400"><Trash2 size={10}/></button>}
+1803-                    </div>
+1804-                    <label 
+--
+1918-                  <div className="ss-label mb-0"><Grid size={14}/><span>FORMATION GRID</span></div>
+1919-                  <div className="flex gap-2">
+1920: <button 
+1921-                      className={`px-1.5 py-1 text-[9px] font-bold tracking-widest rounded transition-all flex items-center justify-center gap-1 border ${isMonotone ? 'bg-blue-600/20 text-blue-400 border-blue-500/30' : 'bg-[#080a0d] text-[#8a95a3] hover:text-[#e2e8f0] border-[#1e252e]'}`}
+1922-                      onClick={() => setIsMonotone(!isMonotone)}
+--
+1936-                  ].map(f => (
+1937-                    <div key={f.id} className="relative group">
+1938: <button 
+1939-                        onClick={() => setStylePattern(f.id)}
+1940-                        className={`w-full flex flex-col p-2.5 border rounded-lg transition-all text-left ${
+--
+1947-                        <span className="text-[9px] opacity-60 mt-0.5">{f.desc}</span>
+1948- </button>
+1949: <button
+1950-                        className={`absolute top-1.5 right-1.5 p-1 rounded transition-all opacity-0 group-hover:opacity-100 bg-[#0a0c10] border border-[#1e252e] hover:border-[#4d5e7a] text-[#8a95a3] hover:text-[#00ffff]`}
+1951-                        title={lang === 'jp' ? '配置とスタイルをリセット' : 'Reset Offset & Style'}
+--
+1961-                </div>
+1962-                <div className="flex gap-2 mt-2">
+1963: <button 
+1964-                    className={`flex-1 py-1.5 text-[10px] font-bold tracking-widest rounded-md transition-all flex items-center justify-center gap-1.5 border border-[#1e252e] bg-[#080a0d] hover:bg-[#1e252e] text-[#8a95a3]`}
+1965-                    onClick={() => {
+--
+1969-                    <RotateCcw size={12}/> {lang === 'jp' ? '配置リセット' : 'UN-OFFSET'}
+1970- </button>
+1971: <button 
+1972-                    className={`flex-1 py-1.5 text-[10px] font-bold tracking-widest rounded-md transition-all flex items-center justify-center gap-1.5 border border-[#1e252e] bg-[#080a0d] hover:bg-[#1e252e] text-[#8a95a3] hover:text-[#00ffff]`}
+1973-                    onClick={() => {
+--
+1983-                <div className="ss-label flex justify-between items-center">
+1984-                  <span className="flex items-center gap-1"><Settings2 size={14}/><span>OPTIONS & GRID</span></span>
+1985: <button 
+1986-                    className={`px-2 py-0.5 text-[9px] font-bold border rounded transition-all ${gridMode !== 'none' ? 'bg-[#00ffff] text-black border-[#00ffff] shadow-[0_0_10px_rgba(0,255,255,0.5)]' : 'bg-[#1e252e] text-[#8a95a3] border-[#1e252e] hover:border-[#4e5d74]'}`}
+1987-                    onClick={() => setGridMode(gridMode === 'none' ? gridColor : 'none')}
+--
+1992-
+1993-                <div className="flex bg-[#080a0d] p-1.5 rounded-lg border border-[#1e252e] gap-1.5 flex-wrap">
+1994: <button 
+1995-                    className={`flex-1 min-w-[50px] py-1.5 text-[10px] font-bold tracking-widest rounded-md transition-all flex items-center justify-center gap-1.5 ${gridColor === 'cyan' ? 'bg-[#2d3640] text-[#00ffff] shadow-sm' : 'text-[#8a95a3] hover:text-[#e2e8f0]'}`}
+1996-                    onClick={() => {
+--
+2001-                    CYAN
+2002- </button>
+2003: <button 
+2004-                    className={`flex-1 min-w-[50px] py-1.5 text-[10px] font-bold tracking-widest rounded-md transition-all flex items-center justify-center gap-1.5 ${gridColor === 'dark' ? 'bg-[#2d3640] text-white shadow-sm' : 'text-[#8a95a3] hover:text-[#e2e8f0]'}`}
+2005-                    onClick={() => {
+--
+2010-                    DARK
+2011- </button>
+2012: <button 
+2013-                    className={`flex-1 min-w-[50px] py-1.5 text-[10px] font-bold tracking-widest rounded-md transition-all flex items-center justify-center gap-1.5 ${gridColor === 'light' ? 'bg-[#2d3640] text-white shadow-sm' : 'text-[#8a95a3] hover:text-[#e2e8f0]'}`}
+2014-                    onClick={() => {
+--
+2031-                        {isSaved ? (
+2032-                          <div className="flex flex-col h-full">
+2033: <button 
+2034-                               className="flex-1 text-[10px] font-bold tracking-widest text-[#00ffff] hover:bg-[#2d3640] transition-colors flex items-center justify-center pt-1"
+2035-                               onClick={() => loadSlot(slot)}
+--
+2038- </button>
+2039-                             <div className="flex border-t border-[#1e252e] h-[24px] shrink-0">
+2040: <button 
+2041-                                 className="flex-1 text-[9px] font-bold tracking-widest text-[#8a95a3] hover:text-white border-r border-[#1e252e] hover:bg-[#4e5d74] transition-colors flex items-center justify-center gap-1"
+2042-                                 onClick={() => {
+--
+2046-                                 }}
+2047- ><Save size={10}/> SAVE</button>
+2048: <button 
+2049-                                 className="flex-1 text-[9px] font-bold tracking-widest text-[#8a95a3] hover:text-white hover:bg-red-900 transition-colors flex items-center justify-center gap-1"
+2050-                                 onClick={() => {
+--
+2056-                          </div>
+2057-                      ) : (
+2058: <button 
+2059-                            className="h-full w-full text-[10px] font-bold tracking-widest text-[#8a95a3] hover:text-[#e2e8f0] hover:bg-[#2d3640] transition-colors flex flex-col items-center justify-center gap-1"
+2060-                            onClick={() => {
+--
+2079-        <div className="p-4 border-t border-[#1e252e] bg-[#0a0c10] space-y-2">
+2080-          <div className="grid grid-cols-2 gap-1.5">
+2081: <button 
+2082-              className={`col-span-1 py-1.5 text-[10px] font-bold tracking-widest rounded-md transition-all flex items-center justify-center gap-1.5 border border-[#1e252e] ${isSaving ? 'bg-blue-600 text-white' : 'bg-[#080a0d] hover:bg-[#1e252e] text-[#8a95a3]'}`}
+2083-              onClick={handleManualSave}
+--
+2085-              <Save size={12}/> {lang === 'jp' ? '一時保存' : 'SAVE SLOT 1'}
+2086- </button>
+2087: <button 
+2088-              className="col-span-1 py-1.5 text-[10px] font-bold tracking-widest rounded-md transition-all flex items-center justify-center gap-1.5 border border-[#2d3640] bg-[#111418] hover:bg-[#1e252e] text-white"
+2089-              onClick={handleDownload}
+--
+2093-          </div>
+2094-          <div className="grid grid-cols-2 gap-1.5">
+2095: <button 
+2096-              className="col-span-1 py-1.5 text-[10px] font-bold tracking-widest rounded-md transition-all flex items-center justify-center gap-1.5 border border-[#1e252e] bg-[#080a0d] hover:bg-[#1e252e] text-[#8a95a3]"
+2097-              onClick={() => fileInputRef.current?.click()}
+--
+2106-              onChange={handleImportProject} 
+2107-            />
+2108: <button 
+2109-              className="col-span-1 py-1.5 text-[10px] font-bold tracking-widest rounded-md transition-all flex items-center justify-center gap-1.5 border border-[#1e252e] bg-[#080a0d] hover:bg-[#1e252e] text-[#8a95a3]"
+2110-              onClick={handleExportProject}
+--
+2125-                <span className="text-[12px] font-bold text-white tracking-widest">{lang === 'jp' ? '表示設定' : 'DISPLAY SETTINGS'}</span>
+2126-              </div>
+2127: <button className="text-[#8a95a3] hover:text-white transition-colors" onClick={() => setIsGlobalSettingsOpen(false)}>
+2128-                <X size={16} />
+2129- </button>
+--
+2149-                <div className="text-[9px] font-bold tracking-widest text-[#4e5d74] mb-2 uppercase">{lang === 'jp' ? '言語' : 'Language'}</div>
+2150-                <div className="flex bg-[#111418] border border-[#1e252e] rounded text-[10px] font-bold p-1">
+2151: <button onClick={() => setLang('en')} className={`flex-1 py-2 transition-colors ${lang === 'en' ? 'bg-[#2d3640] text-[#00ffff]' : 'text-[#8a95a3] hover:text-[#e2e8f0]'}`}>ENGLISH</button>
+2152: <button onClick={() => setLang('jp')} className={`flex-1 py-2 transition-colors ${lang === 'jp' ? 'bg-[#2d3640] text-[#00ffff]' : 'text-[#8a95a3] hover:text-[#e2e8f0]'}`}>日本語</button>
+2153-                </div>
+2154-              </div>
+--
+2173-                  </div>
+2174-                  <div className="flex gap-1 shrink-0">
+2175: <button onClick={() => setCanvasBgColor('#151515')} className="w-8 h-8 bg-[#151515] border border-[#1e252e] hover:border-[#4e5d74] transition-colors" title="Dark setting"></button>
+2176: <button onClick={() => setCanvasBgColor('#808080')} className="w-8 h-8 bg-[#808080] border border-[#1e252e] hover:border-[#4e5d74] transition-colors" title="Gray setting"></button>
+2177: <button onClick={() => setCanvasBgColor('#ffffff')} className="w-8 h-8 bg-[#ffffff] border border-[#1e252e] hover:border-[#4e5d74] transition-colors" title="White setting"></button>
+2178-                  </div>
+2179-                </div>
+--
+2183-                <div className="text-[9px] font-bold tracking-widest text-[#4e5d74] mb-2 uppercase">{lang === 'jp' ? 'アートボードの影' : 'Artboard Shadow'}</div>
+2184-                <div className="flex gap-2">
+2185: <button onClick={() => setArtboardShadow(true)} className={`flex-1 py-2 text-[10px] font-bold border ${artboardShadow ? 'bg-[#2d3640] text-[#00ffff] border-[#4e5d74]' : 'bg-[#0a0c10] text-[#8a95a3] border-[#1e252e] hover:text-[#e2e8f0]'}`}>{lang === 'jp' ? 'オン' : 'ON'}</button>
+2186: <button onClick={() => setArtboardShadow(false)} className={`flex-1 py-2 text-[10px] font-bold border ${!artboardShadow ? 'bg-[#2d3640] text-[#00ffff] border-[#4e5d74]' : 'bg-[#0a0c10] text-[#8a95a3] border-[#1e252e] hover:text-[#e2e8f0]'}`}>{lang === 'jp' ? 'オフ' : 'OFF'}</button>
+2187-                </div>
+2188-              </div>
+--
+2193-                </div>
+2194-                <div className="flex gap-2 mb-3">
+2195: <button onClick={() => setShowStatusText(true)} className={`flex-1 py-2 text-[10px] font-bold border ${showStatusText ? 'bg-[#2d3640] text-[#00ffff] border-[#4e5d74]' : 'bg-[#0a0c10] text-[#8a95a3] border-[#1e252e] hover:text-[#e2e8f0]'}`}>{lang === 'jp' ? '表示' : 'SHOW'}</button>
+2196: <button onClick={() => setShowStatusText(false)} className={`flex-1 py-2 text-[10px] font-bold border ${!showStatusText ? 'bg-[#2d3640] text-[#00ffff] border-[#4e5d74]' : 'bg-[#0a0c10] text-[#8a95a3] border-[#1e252e] hover:text-[#e2e8f0]'}`}>{lang === 'jp' ? '非表示' : 'HIDE'}</button>
+2197-                </div>
+2198-                {showStatusText && (
+--
+2207-                    />
+2208-                    <div className="flex gap-2">
+2209: <button onClick={() => setStatusTheme('dark')} className={`flex-1 py-2 text-[10px] font-bold border ${statusTheme === 'dark' ? 'bg-[#2d3640] text-[#00ffff] border-[#4e5d74]' : 'bg-[#0a0c10] text-[#8a95a3] border-[#1e252e] hover:text-[#e2e8f0]'}`}>{lang === 'jp' ? 'ダーク' : 'DARK'}</button>
+2210: <button onClick={() => setStatusTheme('light')} className={`flex-1 py-2 text-[10px] font-bold border ${statusTheme === 'light' ? 'bg-[#2d3640] text-[#00ffff] border-[#4e5d74]' : 'bg-[#0a0c10] text-[#8a95a3] border-[#1e252e] hover:text-[#e2e8f0]'}`}>{lang === 'jp' ? 'ライト' : 'LIGHT'}</button>
+2211-                    </div>
+2212-                  </div>
+--
+2254-                    <span className="text-[9px] font-bold tracking-widest text-[#4e5d74] mr-2">{lang === 'jp' ? 'モード' : 'MODE'}</span>
+2255-                    <div className="flex bg-[#111418] border border-[#1e252e] rounded text-[9px] font-bold p-0.5 h-[28px]">
+2256: <button onClick={() => setIsEditMode(true)} className={`px-3 h-full flex items-center justify-center transition-colors ${isEditMode ? 'bg-[#2d3640] text-[#00ffff]' : 'text-[#8a95a3] hover:text-[#e2e8f0]'}`}>{lang === 'jp' ? '編集' : 'EDIT'}</button>
+2257: <button onClick={() => { setIsEditMode(false); setSelectedBlockId(null); }} className={`px-3 h-full flex items-center justify-center transition-colors ${!isEditMode ? 'bg-[#2d3640] text-[#00ffff]' : 'text-[#8a95a3] hover:text-[#e2e8f0]'}`}>{lang === 'jp' ? 'プレビュー' : 'PREVIEW'}</button>
+2258-                    </div>
+2259-                 </div>
+--
+2277-                    <span className="text-[9px] font-bold tracking-widest text-[#4e5d74] mr-2">{lang === 'jp' ? 'サイドバー' : 'SIDEBAR'}</span>
+2278-                    <div className="flex bg-[#111418] border border-[#1e252e] rounded text-[9px] font-bold p-0.5 h-[28px]">
+2279: <button onClick={() => setSidebarPosition('left')} className={`px-4 h-full flex items-center justify-center transition-colors ${sidebarPosition === 'left' ? 'bg-[#2d3640] text-[#00ffff]' : 'text-[#8a95a3] hover:text-[#e2e8f0]'}`}>{lang === 'jp' ? '左' : 'LEFT'}</button>
+2280: <button onClick={() => setSidebarPosition('right')} className={`px-4 h-full flex items-center justify-center transition-colors ${sidebarPosition === 'right' ? 'bg-[#2d3640] text-[#00ffff]' : 'text-[#8a95a3] hover:text-[#e2e8f0]'}`}>{lang === 'jp' ? '右' : 'RIGHT'}</button>
+2281-                    </div>
+2282-                 </div>
+--
+2284-                 {/* Theme Toggles */}
+2285-                 <div className="flex items-center gap-2 border-l border-[#1e252e] pl-6">
+2286: <button 
+2287-                      onClick={() => setThemeMode(prev => prev === 'dark' ? 'mono' : (prev === 'mono' ? 'red' : 'dark'))} 
+2288-                      className="flex items-center gap-2 px-3 h-[28px] bg-[#111418] border border-[#1e252e] rounded text-[9px] font-bold text-[#8a95a3] hover:text-[#e2e8f0] hover:bg-[#2d3640] transition-colors uppercase"
+--
+2295-                 <div className="flex items-center gap-3 border-l border-[#1e252e] pl-6">
+2296-                    {/* Settings Button */}
+2297: <button 
+2298-                      className="p-1.5 text-[#8a95a3] hover:text-[#e2e8f0] bg-[#111418] hover:bg-[#2d3640] border border-[#1e252e] rounded-md transition-colors"
+2299-                      onClick={() => setIsGlobalSettingsOpen(prev => !prev)}
+--
+2304-                    
+2305-                    {/* Fullscreen Button */}
+2306: <button 
+2307-                      className="p-1.5 text-[#8a95a3] hover:text-[#e2e8f0] bg-[#111418] hover:bg-[#2d3640] border border-[#1e252e] rounded-md transition-colors"
+2308-                      onClick={() => {
+--
+2319-                    
+2320-                    {/* Close Header Button */}
+2321: <button 
+2322-                      onClick={() => setIsHeaderOpen(false)}
+2323-                      className="p-1.5 text-[#8a95a3] hover:text-[#e2e8f0] bg-[#111418] hover:bg-[#2d3640] border border-[#1e252e] rounded-md transition-colors"
+--
+2338-      {!isHeaderOpen && (
+2339-        <div className="absolute top-4 right-6 z-[60]">
+2340: <button 
+2341-            onClick={() => setIsHeaderOpen(true)}
+2342-            className="p-1.5 bg-white/90 text-gray-700 hover:text-gray-900 border border-gray-300 hover:bg-white rounded-md transition-colors shadow-sm backdrop-blur-sm"
+--
+2388-          className={`absolute top-1/2 -translate-y-1/2 z-50 ${sidebarPosition === 'left' ? 'left-0' : 'right-0'}`}
+2389-        >
+2390: <button 
+2391-            onClick={(e) => { e.stopPropagation(); setIsSidebarOpen(!isSidebarOpen); }}
+2392-            className={`group flex items-center justify-center bg-[#4e5d74] border border-[#2d3640] text-[#e2e8f0] hover:bg-[#a3b8cc] hover:text-[#0a1128] transition-all duration-300 shadow-lg h-16 overflow-hidden ${sidebarPosition === 'left' ? 'rounded-r-lg border-l-0' : 'rounded-l-lg border-r-0'}`}
+--
+2524-            </p>
+2525-            <div className="flex gap-3">
+2526: <button onClick={() => setResetConfirmTarget(null)} className="flex-1 py-2 text-[10px] font-bold border border-[#1e252e] text-[#8a95a3] hover:text-[#e2e8f0] hover:border-[#4e5d74] transition-colors">{lang === 'jp' ? 'キャンセル' : 'CANCEL'}</button>
+2527: <button onClick={() => {
+2528-                if (resetConfirmTarget === 'all') {
+2529-                  setOffsets({});
