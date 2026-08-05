@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { motion, AnimatePresence, LayoutGroup } from 'motion/react';
+import { motion, AnimatePresence, LayoutGroup, MotionConfig } from 'motion/react';
 import { toPng } from 'html-to-image';
 import {
   FileUp,
@@ -83,12 +83,11 @@ const DraggableBlock = ({
   const isEdit = isEditMode;
   const gridColor = gridMode === 'cyan' ? '#00ffff' : gridMode === 'dark' ? '#333333' : gridMode === 'light' ? '#e2e8f0' : 'transparent';
   const frameColor = gridMode === 'cyan' ? '#888888' : gridMode === 'dark' ? '#3b82f6' : gridMode === 'light' ? '#22c55e' : 'transparent';
-
-  // Determine z-index based on state and style
   const currentZIndex = isSelected ? 9999 : style.zIndex;
 
   return (
     <motion.div
+      layout
       id={id}
       onClick={onClick}
       className={`${ className} ${ isEdit ? 'ring-2 cursor-move' : ''} ${ isSelected ? 'ring-4 ring-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)]' : ''}`}
@@ -114,8 +113,8 @@ const DraggableBlock = ({
       } as any}>
       
       {children}
-    </motion.div>);
-
+    </motion.div>
+  );
 };
 
 function getLayoutConfig(pattern: LayoutStyle, orient: Orientation) {
@@ -723,7 +722,7 @@ const PreviewCanvas = ({
 
 };
 
-export default function App() {
+function App() {
   const initialState = (() => {
     try {
       const saved = localStorage.getItem('solid-design-state');
@@ -1359,6 +1358,22 @@ export default function App() {
                       onChange={(e) => {e.stopPropagation();handleBlockStyleChange('color', e.target.value, blockId);}} />
                     <span className="text-[10px] text-[#00ffff] font-mono">{blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.color || '#ffffff'}</span>
                   </div>
+                </div>
+              </div>
+              <div className="flex gap-2 pt-2 border-t border-[#1e252e]">
+                <div className="flex-1">
+                  <div className="text-[8px] font-bold tracking-widest opacity-60 mb-1">{lang === 'jp' ? 'フォント (FONT FAMILY)' : 'FONT FAMILY'}</div>
+                  <select
+                    className="w-full bg-[#0a0c10] border border-[#1e252e] px-2 py-1 text-[10px] text-[#00ffff] focus:outline-none focus:border-[#00ffff] rounded-sm transition-colors"
+                    value={blockStyles[`${stylePattern}-${orientation}`]?.[blockId]?.fontFamily || ''}
+                    onChange={(e) => { e.stopPropagation(); handleBlockStyleChange('fontFamily', e.target.value, blockId); }}
+                  >
+                    {FONT_OPTIONS.map((font) => (
+                      <option key={font.value} value={font.value}>
+                        {font.label}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
               <div className="flex gap-2 pt-2 border-t border-[#1e252e]">
@@ -2166,14 +2181,17 @@ return (
         </div>
 
         {/* The Frame Container (Scales to fit) */}
-        <div
+        <motion.div
             className="relative group z-10"
+            animate={{
+              scale: scale,
+              x: artboardOffset.x,
+              y: artboardOffset.y
+            }}
+            transition={{ type: 'spring', bounce: 0, duration: 0.15 }}
             style={{
               width: '1200px',
               height: '900px',
-              translate: `${ artboardOffset.x}px ${ artboardOffset.y}px`,
-              scale: scale,
-              transition: 'scale 0.05s ease-out',
               transformOrigin: 'center center',
               boxShadow: artboardShadow ? '0 40px 80px -20px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(0,0,0,0.05)' : 'none'
             }}>
@@ -2205,7 +2223,7 @@ return (
            </div>
 
            {/* Export UI removed */}
-        </div>
+        </motion.div>
         
         <motion.div
             layout
@@ -2311,4 +2329,12 @@ return (
       </div>
     </div>);
 
+}
+
+export default function AppWrapper() {
+  return (
+    <MotionConfig reducedMotion="never">
+      <App />
+    </MotionConfig>
+  );
 }
