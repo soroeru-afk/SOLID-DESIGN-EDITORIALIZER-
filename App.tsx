@@ -782,7 +782,7 @@ function App() {
     };
   }, [isResizingSidebar, sidebarPosition, sidebarWidth]);
   const [canvasBgColor, setCanvasBgColor] = useState<string>('#ffffff');
-  const [themeMode, setThemeMode] = useState<'dark' | 'mono' | 'red'>('dark');
+  const [themeMode, setThemeMode] = useState<'dark' | 'mono' | 'red'>(() => (localStorage.getItem('solid-design-theme') as 'dark' | 'mono' | 'red') || 'dark');
   const [isGlobalSettingsOpen, setIsGlobalSettingsOpen] = useState<boolean>(false);
   const [artboardShadow, setArtboardShadow] = useState<boolean>(true);
   const [artboardScaleParam, setArtboardScaleParam] = useState<number>(initialState.artboardScaleParam ?? 92);
@@ -790,13 +790,18 @@ function App() {
   const [isPanning, setIsPanning] = useState<boolean>(false);
   const [showStatusText, setShowStatusText] = useState<boolean>(true);
   const [statusOpacity, setStatusOpacity] = useState<number>(80);
-  const [statusTheme, setStatusTheme] = useState<'dark' | 'light'>('dark');
+  const [statusTheme, setStatusTheme] = useState<'dark' | 'light'>(() => (localStorage.getItem('solid-design-status-theme') as 'dark' | 'light') || 'dark');
   const [isPanelCollapsed, setIsPanelCollapsed] = useState<boolean>(true);
   const [lang, setLang] = useState<'en' | 'jp'>('en');
   const [isHeaderOpen, setIsHeaderOpen] = useState<boolean>(true);
   const [resetConfirmTarget, setResetConfirmTarget] = useState<'all' | 'un-offset' | string | null>(null);
 
   useEffect(() => {
+    localStorage.setItem('solid-design-status-theme', statusTheme);
+  }, [statusTheme]);
+
+  useEffect(() => {
+    localStorage.setItem('solid-design-theme', themeMode);
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     if (metaThemeColor) {
       if (themeMode === 'mono') {
