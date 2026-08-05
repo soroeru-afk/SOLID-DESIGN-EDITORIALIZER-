@@ -797,6 +797,19 @@ function App() {
   const [resetConfirmTarget, setResetConfirmTarget] = useState<'all' | 'un-offset' | string | null>(null);
 
   useEffect(() => {
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (metaThemeColor) {
+      if (themeMode === 'mono') {
+        metaThemeColor.setAttribute('content', '#e8e8e8');
+      } else if (themeMode === 'red') {
+        metaThemeColor.setAttribute('content', '#0f0707');
+      } else {
+        metaThemeColor.setAttribute('content', '#080a0d');
+      }
+    }
+  }, [themeMode]);
+
+  useEffect(() => {
     const filled: number[] = [];
     [1, 2, 3, 4].forEach((slot) => {
       if (localStorage.getItem(`solid-design-slot-${ slot}`)) filled.push(slot);
