@@ -796,6 +796,19 @@ function App() {
   const [isHeaderOpen, setIsHeaderOpen] = useState<boolean>(true);
   const [resetConfirmTarget, setResetConfirmTarget] = useState<'all' | 'un-offset' | string | null>(null);
 
+  const [infoPanelPos, setInfoPanelPos] = useState<{x: number, y: number}>(() => {
+    try {
+      const saved = localStorage.getItem('solid-design-info-pos');
+      return saved ? JSON.parse(saved) : { x: 0, y: 0 };
+    } catch {
+      return { x: 0, y: 0 };
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem('solid-design-info-pos', JSON.stringify(infoPanelPos));
+  }, [infoPanelPos]);
+
   useEffect(() => {
     localStorage.setItem('solid-design-status-theme', statusTheme);
   }, [statusTheme]);
@@ -2248,6 +2261,10 @@ return (
             drag
             dragMomentum={false}
             dragConstraints={panelConstraintsRef}
+            initial={{ x: infoPanelPos.x, y: infoPanelPos.y }}
+            onDragEnd={(e, info) => {
+              setInfoPanelPos(prev => ({ x: prev.x + info.offset.x, y: prev.y + info.offset.y }));
+            }}
             className={`ignore-theme absolute w-[280px] font-mono tracking-widest border  z-[100] flex-col transition-colors duration-300 backdrop-blur-md cursor-grab active:cursor-grabbing flex overflow-hidden ${
             statusTheme === 'dark' ?
             'bg-[#080a0d]/80 border-white/10 text-[#ffffff] shadow-black/50 shadow-2xl' :
